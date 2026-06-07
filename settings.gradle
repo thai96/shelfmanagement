@@ -1,1 +1,3 @@
 rootProject.name = 'shelfmanagement'
+
+include 'persistent_data'
