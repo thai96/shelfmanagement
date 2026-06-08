@@ -1,1 +1,54 @@
-services: {}
+version: "3.9"
+
+networks:
+  app-net:
+    driver: bridge
+
+volumes:
+  db-data:
+
+services:
+  persistent-data:
+    container_name: persistent-data
+    build:
+      context: ./persistent_data
+      dockerfile: Dockerfile
+      image: thaipham/persistent-data
+      ports:
+        -"1999:1999"
+      networks:
+        - app-net
+      environment:
+        SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+        DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+        DB_USER: ${POSTGRES_USER}
+        DB_PASS: ${POSTGRES_PASSWORD}
+      depends_on:
+        db:
+          condition: service_healthy
+      restart: unless-stopped
+      healthcheck:
+        test: ["CMD", "curl", "-f", "http://localhost:1999/actuator/health"]
+        interval: 30s
+        timeout: 10s
+        retries: 5
+
+  db:
+    container_name: postgres-container
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
