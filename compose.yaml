@@ -8,10 +8,10 @@ volumes:
   db-data:
 
 services:
-  persistent-data:
-    container_name: persistent-data
+  storage-routing-service:
+    container_name: storage-routing-service
     build:
-      context: ./persistent_data
+      context: ./storage-routing-service
       dockerfile: Dockerfile
       image: thaipham/persistent-data
       ports:
