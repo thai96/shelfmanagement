@@ -1,4 +1,4 @@
-package thai.pham.storageroutingservice.entity;
+package com.thai.pham.storageroutingservice.entity;
 
 @Data
 class ProductAttributes {

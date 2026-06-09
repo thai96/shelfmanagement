@@ -1,4 +1,4 @@
-package thai.pham.storageroutingservice.configs
+package com.thai.pham.storageroutingservice.configs;
 
 @Configuration // Decalre that this is a source of beans - which means beans is generated in this class using function with @Bean annotation
 @EnableJpaRepositories( //Annotation which makes spring scan the package of configured class for Spring data repository and implement it

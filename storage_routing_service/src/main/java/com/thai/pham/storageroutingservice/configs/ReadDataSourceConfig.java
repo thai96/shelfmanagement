@@ -1,4 +1,4 @@
-package thai.pham.storageroutingservice.configs
+package com.thai.pham.storageroutingservice.configs;
 
 @Configuration
 @EnableJpaRepositories(
