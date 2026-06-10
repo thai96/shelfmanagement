@@ -21,4 +21,12 @@ public class Product {
     @Column(name = "attributes", nullable = true)
     @Convert(converter = ProductAttributes.ProductAttributesConverter.class)
     private ProductAttributes productAttributes;
+
+    @OneToMany(
+        mappedBy = "product", 
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, 
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    private Inventory inventory;
 }

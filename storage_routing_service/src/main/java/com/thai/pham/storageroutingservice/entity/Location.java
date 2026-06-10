@@ -22,4 +22,12 @@ public class Location {
     @Column(name = "is_active", nullable = false)
     @ColumnDefault("false")
     private Boolean isActive;
+
+    @OneToMany(
+        mappedBy = "location", 
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, 
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    private Inventory inventory;
 }
