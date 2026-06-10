@@ -36,5 +36,5 @@ public class Inventory {
         fetch = FetchType.LAZY
     )
     @JoinColumn(name = "product_id", referencedColumnName = "id")
-    private Location location;
+    private Product product;
 }
