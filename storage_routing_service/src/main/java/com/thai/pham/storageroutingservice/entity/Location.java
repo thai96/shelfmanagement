@@ -29,7 +29,7 @@ public class Location {
         fetch = FetchType.LAZY,
         orphanRemoval = true
     )
-    private Inventory inventory;
+    private List<Inventory> inventory;
 
     @OneToMany(
         mappedBy = "fromLocation",
