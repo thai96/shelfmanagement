@@ -46,4 +46,12 @@ public class Location {
         orphanRemoval = true
     )
     private List<StockTransfer> incomingTransfer;
+
+    @OneToMany(
+        mappedBy = "location", 
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, 
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    private List<Ledger> ledgers;
 }

@@ -29,4 +29,12 @@ public class Product {
         orphanRemoval = true
     )
     private List<Inventory> inventory;
+
+    @OneToMany(
+        mappedBy = "product", 
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, 
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    private List<Ledger> ledgers;
 }
