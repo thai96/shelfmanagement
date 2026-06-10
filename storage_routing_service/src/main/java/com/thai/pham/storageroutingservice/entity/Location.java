@@ -30,4 +30,20 @@ public class Location {
         orphanRemoval = true
     )
     private Inventory inventory;
+
+    @OneToMany(
+        mappedBy = "fromLocation",
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, 
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    private List<StockTransfer> outgoingTransfer;
+
+    @OneToMany(
+        mappedBy = "toLocation",
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, 
+        fetch = FetchType.LAZY,
+        orphanRemoval = true
+    )
+    private List<StockTransfer> incomingTransfer;
 }

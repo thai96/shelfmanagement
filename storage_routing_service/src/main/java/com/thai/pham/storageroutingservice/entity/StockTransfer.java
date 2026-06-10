@@ -16,14 +16,14 @@ public StockTransfer {
     @Convert(converter = TransferStatus.TransferStatusConverter.class)
     private TransferStatus transferStatus;
 
-    @OneToOne(
+    @ManyToOne(
         cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
         fetch = FetchType.LAZY
     )
     @JoinColumn(name = "from_location", referencedColumnName = "id")
     private Location fromLocation;
 
-    @OneToOne(
+    @ManyToOne(
         cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
         fetch = FetchType.LAZY
     )
