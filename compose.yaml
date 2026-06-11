@@ -24,7 +24,17 @@ services:
         DB_USER: ${POSTGRES_USER}
         DB_PASS: ${POSTGRES_PASSWORD}
       depends_on:
-        db:
+        pg-master:
+          condition: service_healthy
+        pg-slave-1:
+          condition: service_healthy
+        pg-slave-2:
+          condition: service_healthy
+        pg-slave-3:
+          condition: service_healthy
+        pg-slave-4:
+          condition: service_healthy
+        pg-slave-5:
           condition: service_healthy
       restart: unless-stopped
       healthcheck:
@@ -52,3 +62,51 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  pg-master:
+    image: bitnami/postgresql:15
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=master
+      - POSTGRESQL_REPLICATION_USER=${POSTGRES_REP_USER}
+      - POSTGRESQL_REPLICATION_PASSWORD=${POSTGRES_REP_PASSWORD}
+      - POSTGRESQL_USERNAME=${POSTGRES_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+
+  x-pg-slave-config: &pg-slave-config
+    image: bitnami/postgresql:15
+    depends_on:
+      pg-master:
+        condition: service_healthy
+    environment:
+      - POSTGRESQL_REPLICATION_MODE=slave
+      - POSTGRESQL_REPLICATION_USER=${POSTGRES_REP_USER}
+      - POSTGRESQL_REPLICATION_PASSWORD=${POSTGRES_REP_PASSWORD}
+      - POSTGRESQL_USERNAME=${POSTGRES_USER}
+      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRESQL_DATABASE=${POSTGRES_DB}
+      - POSTGRESQL_MASTER_HOST=pg-master
+      - POSTGRESQL_MASTER_PORT_NUMBER=5432
+    
+  pg-slave-1:
+    <<: *pg-slave-config
+    ports: ["5433:5432"]
+  
+  pg-slave-2:
+    <<: *pg-slave-config
+    ports: ["5434:5432"]
+
+  pg-slave-3:
+    <<: *pg-slave-config
+    ports: ["5435:5432"]
+
+  pg-slave-4:
+    <<: *pg-slave-config
+    ports: ["5436:5432"]
+
+  pg-slave-5:
+    <<: *pg-slave-config
+    ports: ["5437:5432"]
+  
