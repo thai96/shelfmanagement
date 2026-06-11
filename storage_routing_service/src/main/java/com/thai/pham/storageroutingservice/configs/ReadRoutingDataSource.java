@@ -1,6 +1,9 @@
 package com.thai.pham.storageroutingservice.configs;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReadRoutingDataSource extends AbstractRoutingDataSource {
     private final AtomicInteger counter = new AtomicInteger(0);
