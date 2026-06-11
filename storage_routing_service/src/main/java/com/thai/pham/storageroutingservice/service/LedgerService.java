@@ -2,14 +2,14 @@ package thai.pham.storageroutingservice.service;
 
 @Service
 public class LedgerService {
-    private LedgerDao ledgerDao;
+    private LedgerRepository ledgerRepo;
 
     @Autowired
-    public LedgerService(LedgerDao ledgerDao) {
-        this.ledgerDao = ledgerDao;
+    public LedgerService(LedgerRepository ledgerRepo) {
+        this.ledgerRepo = ledgerRepo;
     }
 
     public List<Ledger> getAllLedger() {
-        return ledgerDao.getAll();
+        return ledgerRepo.getAll();
     }
 }

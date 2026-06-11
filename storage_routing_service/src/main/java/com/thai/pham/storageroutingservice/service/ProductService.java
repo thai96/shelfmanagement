@@ -2,14 +2,14 @@ package thai.pham.storageroutingservice.service;
 
 @Service
 public class ProductService {
-    private ProductDao productDao;
+    private ProductRepository productRepo;
 
     @Autowired
-    public ProductService(ProductDao productDao) {
-        this.productDao = productDao;
+    public ProductService(ProductRepository productRepo) {
+        this.productRepo = productRepo;
     }
 
     public List<Product> getAllProduct() {
-        return productDao.getAll();
+        return productRepo.getAll();
     }
 }

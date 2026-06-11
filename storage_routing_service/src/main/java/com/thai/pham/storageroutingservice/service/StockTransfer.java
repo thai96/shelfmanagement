@@ -2,14 +2,14 @@ package thai.pham.storageroutingservice.service;
 
 @Service
 public class StockTransferService {
-    private StockTransferDao stockTransferDao;
+    private StockTransferRepository stockTransferRepo;
 
     @Autowired
-    public StockTransferService(StockTransferDao stockTransferDao) {
-        this.stockTransferDao = stockTransferDao;
+    public StockTransferService(StockTransferRepository stockTransferRepo) {
+        this.stockTransferRepo = stockTransferRepo;
     }
 
     public List<StockTransfer> getAllStockTransfer() {
-        return stockTransferDao.getAll();
+        return stockTransferRepo.getAll();
     }
 }

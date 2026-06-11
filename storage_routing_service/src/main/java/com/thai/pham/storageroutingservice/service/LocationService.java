@@ -2,14 +2,14 @@ package thai.pham.storageroutingservice.service;
 
 @Service
 public class LocationService {
-    private LocationDao locationDao;
+    private LocationRepository locationRepo;
 
     @Autowired
-    public LocationService(LocationDao locationDao) {
-        this.locationDao = locationDao;
+    public LocationService(LocationRepository locationRepo) {
+        this.locationRepo = locationRepo;
     }
 
     public List<Location> getAllLocation() {
-        return locationDao.getAll();
+        return locationRepo.getAll();
     }
 }

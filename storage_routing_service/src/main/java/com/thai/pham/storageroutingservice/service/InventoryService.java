@@ -2,14 +2,14 @@ package thai.pham.storageroutingservice.service;
 
 @Service
 public class InventoryService {
-    private InventoryDao inventoryDao;
+    private InventoryRepository inventoryRepo;
 
     @Autowired
-    public InventoryService(InventoryDao inventoryDao) {
-        this.inventoryDao = inventoryDao;
+    public InventoryService(InventoryRepository inventoryRepo) {
+        this.inventoryRepo = inventoryRepo;
     }
 
     public List<Inventory> getAllInventory() {
-        return inventoryDao.getAll();
+        return inventoryRepo.getAll();
     }
 }
