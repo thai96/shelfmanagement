@@ -1,8 +1,19 @@
-package thai.pham.storageroutingservice.service;
+package com.thai.pham.storageroutingservice.service;
+
+import com.thai.pham.storageroutingservice.entity.Location;
+import com.thai.pham.storageroutingservice.entity.LocationType;
+import com.thai.pham.storageroutingservice.repository.LocationRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 
 @Service
 public class LocationService {
-    private LocationRepository locationRepo;
+    private final LocationRepository locationRepo;
 
     @Autowired
     public LocationService(LocationRepository locationRepo) {
@@ -13,12 +24,12 @@ public class LocationService {
         return locationRepo.findAll();
     }
 
-    public Page<Location> getWareHouseLocation(Pageable pageable){
-        return locationRepo.findLocationByLocationType(LocationType.WARE_HOUSE);
+    public Page<Location> getWareHouseLocation(Pageable pageable) {
+        return locationRepo.findLocationByLocationType(LocationType.WARE_HOUSE, pageable);
     }
 
-    public Page<Location> getStoreLocation(Pageable pageable){
-        return locationRepo.findLocationByLocationType(LocationType.STORE);
+    public Page<Location> getStoreLocation(Pageable pageable) {
+        return locationRepo.findLocationByLocationType(LocationType.STORE, pageable);
     }
 
     public Page<Location> getLocationByName(String input, Pageable pageable) {

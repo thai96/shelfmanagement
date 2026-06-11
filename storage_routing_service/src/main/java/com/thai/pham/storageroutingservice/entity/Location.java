@@ -1,5 +1,15 @@
 package com.thai.pham.storageroutingservice.entity;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.List;
+import java.util.UUID;
+
 @Entity
 @Table(name = "Location")
 @Getter
@@ -15,7 +25,7 @@ public class Location {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "type", nullable = false, )
+    @Column(name = "type", nullable = false)
     @Convert(converter = LocationType.LocationTypeConverter.class)
     private LocationType locationType;
 

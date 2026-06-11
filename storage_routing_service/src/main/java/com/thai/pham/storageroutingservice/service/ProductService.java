@@ -1,8 +1,15 @@
-package thai.pham.storageroutingservice.service;
+package com.thai.pham.storageroutingservice.service;
+
+import com.thai.pham.storageroutingservice.entity.Product;
+import com.thai.pham.storageroutingservice.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ProductService {
-    private ProductRepository productRepo;
+    private final ProductRepository productRepo;
 
     @Autowired
     public ProductService(ProductRepository productRepo) {
@@ -10,6 +17,6 @@ public class ProductService {
     }
 
     public List<Product> getAllProduct() {
-        return productRepo.getAll();
+        return productRepo.findAll();
     }
 }

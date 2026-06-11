@@ -1,4 +1,8 @@
-package thai.pham.storageroutingservice.repository;
+package com.thai.pham.storageroutingservice.repository;
 
-@ReadOnlyRepository
-public interface LedgerRepository extends JpaRepository<Location, UUID> {}
+import com.thai.pham.storageroutingservice.entity.Ledger;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface LedgerRepository extends JpaRepository<Ledger, UUID> {}

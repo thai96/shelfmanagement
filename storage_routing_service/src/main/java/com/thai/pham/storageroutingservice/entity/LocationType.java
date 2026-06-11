@@ -1,6 +1,12 @@
 package com.thai.pham.storageroutingservice.entity;
 
-enum LocationType {
+import jakarta.persistence.AttributeConverter;
+import jakarta.persistence.Converter;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public enum LocationType {
     STORE("STORE"),
     WARE_HOUSE("WAREHOUSE");
 
@@ -12,6 +18,13 @@ enum LocationType {
 
     @Converter
     public static class LocationTypeConverter implements AttributeConverter<LocationType, String> {
+        private final Map<String, LocationType> valueMapping = new HashMap<>();
+
+        public LocationTypeConverter() {
+            valueMapping.put(LocationType.STORE.sqlValue, LocationType.STORE);
+            valueMapping.put(LocationType.WARE_HOUSE.sqlValue, LocationType.WARE_HOUSE);
+        }
+
         @Override
         public String convertToDatabaseColumn(LocationType locationType) {
             return locationType.sqlValue;
@@ -19,11 +32,7 @@ enum LocationType {
 
         @Override
         public LocationType convertToEntityAttribute(String locationType) {
-            return switch(locationType.toUpperCase()) {
-                LocationType.STORE.sqlValue -> LocationType.STORE;
-                LocationType.WARE_HOUSE.sqlValue -> LocationType.WARE_HOUSE;
-                else -> null;
-            }
+            return valueMapping.getOrDefault(locationType, null);
         }
     }
 }

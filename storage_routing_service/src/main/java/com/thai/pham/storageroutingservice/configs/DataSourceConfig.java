@@ -1,22 +1,33 @@
 package com.thai.pham.storageroutingservice.configs;
 
+import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 public class DataSourceConfig {
-    private String masterUrl;
-    private String slave1Url;
-    private String slave2Url;
-    private String slave3Url;
-    private String slave4Url;
-    private String slave5Url;
-    private String userName;
-    private String password;
-    private String driverClassName;
-    private Integer maximumConnections; // Maximum NUMBER OF connection in the pool at the same time
-    private Integer leakThresholdInMillis; // Log possible leak connection
-    private Boolean showSQL;
+    private final String masterUrl;
+    private final String slave1Url;
+    private final String slave2Url;
+    private final String slave3Url;
+    private final String slave4Url;
+    private final String slave5Url;
+    private final String userName;
+    private final String password;
+    private final String driverClassName;
+    private final Integer maximumConnections; // Maximum NUMBER OF connection in the pool at the same time
+    private final Integer leakThresholdInMillis; // Log possible leak connection
 
     @Autowired
-    public PrimaryDataSourceConfiguration(
+    public DataSourceConfig(
         @Value("${database.master.url}") String masterUrl,
         @Value("${database.slaves.slave1.url}") String slave1Url,
         @Value("${database.slaves.slave2.url}") String slave2Url,
@@ -27,10 +38,9 @@ public class DataSourceConfig {
         @Value("${spring.datasource.password}") String password,
         @Value("${spring.datasource.driver-class-name}") String driverClassName,
         @Value("${spring.datasource.hikari.maximum-pool-size}") Integer maximumConnections,
-        @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer tomcatRemoveAbandonedConnections,
-        @Value("${spring.jpa.show-sql}") Boolean showSQL
+        @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer leakThresholdInMillis
     ) {
-        this.masterUrl = masterUrl,
+        this.masterUrl = masterUrl;
         this.slave1Url = slave1Url;
         this.slave2Url = slave2Url;
         this.slave3Url = slave3Url;
@@ -41,7 +51,6 @@ public class DataSourceConfig {
         this.driverClassName = driverClassName;
         this.maximumConnections = maximumConnections;
         this.leakThresholdInMillis = leakThresholdInMillis;
-        this.showSQL = showSQL;
     }
 
     @Bean
@@ -56,7 +65,7 @@ public class DataSourceConfig {
         targetDataSources.put("slave4", createDataSource(slave4Url));
         targetDataSources.put("slave5", createDataSource(slave5Url));
 
-        ReplicationRoutingDataSource routingDataSource = new ReplicationRoutingDataSource();
+        ReadRoutingDataSource routingDataSource = new ReadRoutingDataSource();
         routingDataSource.setDefaultTargetDataSource(master);
         routingDataSource.setTargetDataSources(targetDataSources);
         routingDataSource.afterPropertiesSet();

@@ -1,5 +1,7 @@
 package com.thai.pham.storageroutingservice.configs;
 
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+
 public class ReadRoutingDataSource extends AbstractRoutingDataSource {
     private final AtomicInteger counter = new AtomicInteger(0);
     private final int slaveCount = 5;

@@ -1,5 +1,14 @@
 package com.thai.pham.storageroutingservice.entity;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.OffsetDateTime;
+import java.util.UUID;
+
 @Entity
 @Table(name = "LEDGER")
 @Getter
@@ -16,7 +25,7 @@ public class Ledger {
     private Integer qtyChange;
 
     @Column(name = "reason", nullable = false)
-    @Convert(ItemChangeReason.ItemChangeReasonConverter.class)
+    @Convert(converter = ItemChangeReason.ItemChangeReasonConverter.class)
     private ItemChangeReason reason;
 
     @Column(name = "ref_id", nullable = false)

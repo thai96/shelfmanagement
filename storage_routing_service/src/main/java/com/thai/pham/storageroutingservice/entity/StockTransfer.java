@@ -1,12 +1,20 @@
 package com.thai.pham.storageroutingservice.entity;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.util.UUID;
+
 @Entity
 @Table(name = "STOCK_TRANSFER")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public StockTransfer {
+public class StockTransfer {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", updatable = false, nullable = false)

@@ -1,8 +1,15 @@
-package thai.pham.storageroutingservice.service;
+package com.thai.pham.storageroutingservice.service;
+
+import com.thai.pham.storageroutingservice.entity.Inventory;
+import com.thai.pham.storageroutingservice.repository.InventoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class InventoryService {
-    private InventoryRepository inventoryRepo;
+    private final InventoryRepository inventoryRepo;
 
     @Autowired
     public InventoryService(InventoryRepository inventoryRepo) {
@@ -10,6 +17,6 @@ public class InventoryService {
     }
 
     public List<Inventory> getAllInventory() {
-        return inventoryRepo.getAll();
+        return inventoryRepo.findAll();
     }
 }
