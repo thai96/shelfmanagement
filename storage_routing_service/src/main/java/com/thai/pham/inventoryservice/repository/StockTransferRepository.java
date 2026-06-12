@@ -1,0 +1,8 @@
+package com.thai.pham.inventoryservice.repository;
+
+import com.thai.pham.inventoryservice.entity.StockTransfer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.UUID;
+
+public interface StockTransferRepository extends JpaRepository<StockTransfer, UUID> {}
