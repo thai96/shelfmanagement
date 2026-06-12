@@ -2,14 +2,13 @@ package com.thai.pham.storageroutingservice.entity;
 
 import jakarta.persistence.AttributeConverter;
 import lombok.Data;
-import org.hibernate.engine.jdbc.Size;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 @Data
 public class ProductAttributes {
     private String color;
-    private Size size;
+    private String size;
 
     public static final class ProductAttributesConverter implements AttributeConverter<ProductAttributes, String> {
         private final ObjectMapper objectMapper = new ObjectMapper();

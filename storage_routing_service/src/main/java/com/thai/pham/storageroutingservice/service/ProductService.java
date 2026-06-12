@@ -19,4 +19,10 @@ public class ProductService {
     public List<Product> getAllProduct() {
         return productRepo.findAll();
     }
+
+    public Page<Product> getAllVariationOfProduct(String productName, Pageable pageable) {
+        return productRepo.findProductByProductNameContaining(productName, pageable);
+    }
+
+    
 }
