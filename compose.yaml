@@ -109,4 +109,8 @@ services:
   pg-slave-5:
     <<: *pg-slave-config
     ports: ["5437:5432"]
-  
+
+  redis:
+    image: regis:8.6.4
+    ports:
+      -"6379:6379"
