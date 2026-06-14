@@ -12,7 +12,7 @@ public class PageDtoMapper {
             page.getNumber(),
             page.getSize(),
             page.getTotalElements(),
-            page.getTotalPages(),
+            (long) page.getTotalPages(),
             page.isLast(),
             page.isFirst()
         );
