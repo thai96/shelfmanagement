@@ -1,5 +1,9 @@
 package com.thai.pham.inventoryservice.dto;
 
+import lombok.Data;
+
+import java.util.UUID;
+
 @Data
 public class ProductInventoryDto {
     private UUID productId;

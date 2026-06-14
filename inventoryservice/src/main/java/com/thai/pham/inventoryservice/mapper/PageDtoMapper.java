@@ -1,4 +1,8 @@
-package com.thai.pham.inventoryservice.utils;
+package com.thai.pham.inventoryservice.mapper;
+
+import com.thai.pham.inventoryservice.dto.PageDto;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 @Component
 public class PageDtoMapper {
