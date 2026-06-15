@@ -58,4 +58,14 @@ public class ProductService {
         productRepo.persist(newProductItem);
         return productInventoryDetailMapper.mapObject(newProductItem);
     }
+
+    @Transactional(readOnly = false)
+    public Boolean deleteProductById(UUID productId) {
+        Product product = productRepo.findProductById(productId);
+        if(product == null) {
+            return true;
+        }
+        productRepo.deleteProductById(productId);
+        return productRepo.existsById(productId);
+    }
 }
