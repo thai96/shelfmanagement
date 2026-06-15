@@ -1,0 +1,13 @@
+package com.thai.pham.inventoryservice.dto;
+
+import lombok.Data;
+
+import java.io.Serializable;
+
+@Data
+public class InventoryUpdateDto implements Serializable {
+    private LocationDto location;
+    private Integer qtyAvailable;
+    private Integer qtyOnHand;
+    private Integer qtyReserved;
+}

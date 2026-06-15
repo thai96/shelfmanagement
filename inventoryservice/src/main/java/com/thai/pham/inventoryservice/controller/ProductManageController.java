@@ -53,5 +53,18 @@ public class ProductManageController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<>
+    public ResponseEntity<Void> deleteProduct(@RequestBody(name = "id") UUID productId) {
+        if(productService.deleteProductById(productId)) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<ProductUpdateDto> updateProduct(
+        @RequestBody("updateData") ProductUpdateDto productUpdateDto
+    ) {
+        ProductUpdateDto updatedData = productService.updateOrInsertProduct(productUpdateDto);
+        return ResponseEntity.ok(updatedData);
+    }
 }
