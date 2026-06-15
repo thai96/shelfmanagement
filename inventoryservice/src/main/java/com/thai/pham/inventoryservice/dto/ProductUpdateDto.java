@@ -3,7 +3,9 @@ package com.thai.pham.inventoryservice.dto;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
+@Data
 public class ProductUpdateDto implements Serializable {
     private String productName;
     private String sku;

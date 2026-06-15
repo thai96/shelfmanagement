@@ -1,11 +1,13 @@
 package com.thai.pham.inventoryservice.entity;
 
 import jakarta.persistence.AttributeConverter;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import tools.jackson.core.JacksonException;
 import tools.jackson.databind.ObjectMapper;
 
 @Data
+@AllArgsConstructor
 public class ProductAttributes {
     private String color;
     private String size;

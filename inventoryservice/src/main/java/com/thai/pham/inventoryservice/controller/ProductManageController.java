@@ -53,7 +53,7 @@ public class ProductManageController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<Void> deleteProduct(@RequestBody(name = "id") UUID productId) {
+    public ResponseEntity<Void> deleteProduct(@RequestBody UUID productId) {
         if(productService.deleteProductById(productId)) {
             return ResponseEntity.notFound().build();
         }

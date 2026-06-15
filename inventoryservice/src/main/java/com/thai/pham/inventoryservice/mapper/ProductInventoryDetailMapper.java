@@ -1,4 +1,13 @@
-package com.thai.pham.inventoryservice.utils;
+package com.thai.pham.inventoryservice.mapper;
+
+import com.thai.pham.inventoryservice.dto.LocationDto;
+import com.thai.pham.inventoryservice.dto.ProductInventoryDetailDto;
+import com.thai.pham.inventoryservice.entity.Inventory;
+import com.thai.pham.inventoryservice.entity.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ProductInventoryDetailMapper {
@@ -12,7 +21,7 @@ public class ProductInventoryDetailMapper {
 
     public ProductInventoryDetailDto mapObject(Product product) {
         Integer productAvailable = product.getInventory().stream()
-            .map(inventory -> findAvailableQuantity(inventory)).sum();
+            .mapToInt(this::findAvailableQuantity).sum();
         Boolean isProductAvailable = productAvailable > 0;
         List<LocationDto> locationDtos = product.getInventory().stream()
             .map(inventory -> locationMapper.mapObject(inventory.getLocation()))
@@ -24,6 +33,7 @@ public class ProductInventoryDetailMapper {
             isProductAvailable,
             product.getProductAttributes().getColor(),
             product.getProductAttributes().getSize(),
+            product.getSku(),
             locationDtos
         );
     }

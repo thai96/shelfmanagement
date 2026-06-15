@@ -1,11 +1,20 @@
 package com.thai.pham.inventoryservice.service;
 
+import com.thai.pham.inventoryservice.dto.ProductInventoryDetailDto;
 import com.thai.pham.inventoryservice.entity.Product;
+import com.thai.pham.inventoryservice.entity.ProductAttributes;
 import com.thai.pham.inventoryservice.repository.ProductRepository;
+import com.thai.pham.inventoryservice.mapper.ProductInventoryDetailMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -55,8 +64,8 @@ public class ProductService {
             new ProductAttributes(productDto.getProductColor(), productDto.getSize())
         );
         newProductItem.setSku(productDto.getSku());
-        productRepo.persist(newProductItem);
-        return productInventoryDetailMapper.mapObject(newProductItem);
+        Product createdProductItem = productRepo.saveAndFlush(newProductItem);
+        return productInventoryDetailMapper.mapObject(createdProductItem);
     }
 
     @Transactional(readOnly = false)
@@ -65,7 +74,7 @@ public class ProductService {
         if(product == null) {
             return true;
         }
-        productRepo.deleteProductById(productId);
+        productRepo.deleteById(productId);
         return productRepo.existsById(productId);
     }
 }
