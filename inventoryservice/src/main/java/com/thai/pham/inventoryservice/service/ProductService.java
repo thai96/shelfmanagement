@@ -8,12 +8,17 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductService {
+    private final ProductInventoryDetailMapper productInventoryDetailMapper;
     private final ProductRepository productRepo;
 
+    private static final Integer DEFAULT_PAGE_SIZE = 20;
+
     @Autowired
-    public ProductService(ProductRepository productRepo) {
+    public ProductService(ProductRepository productRepo, ProductInventoryDetailMapper productInventoryDetailMapper) {
         this.productRepo = productRepo;
+        this.productInventoryDetailMapper = productInventoryDetailMapper;
     }
 
     public List<Product> getAllProduct() {
@@ -24,5 +29,21 @@ public class ProductService {
         return productRepo.findProductByProductNameContaining(productName, pageable);
     }
 
-    
+    @Cacheable(keyGenerator="productPageKeyGenerator")
+    public Page<Product> findAllProductByName(String searchTerm, Pageable pageable) {
+        if(isStringEmpty(searchTerm)) {
+            return productRepo.findAll(pageable);
+        }
+        return productRepo.findProductByProductNameContaining(searchTerm, pageable);
+    }
+
+    private boolean isStringEmpty(String content) {
+        return content == null || content.isBlank();
+    }
+
+    @Cacheable(keyGenerator="productKeyGenerator")
+    public ProductInventoryDetailDto findProductById(UUID productId) {
+        Product product = productRepo.findProductById(productId);
+        return product != null ? productInventoryDetailMapper.mapObject(product) : null;
+    }
 }
