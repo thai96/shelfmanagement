@@ -13,5 +13,6 @@ public class ProductInventoryDetailDto implements Serializable {
     private Boolean isAvailable;
     private String productColor;
     private String size;
+    private String sku;
     private List<LocationDto> location;
 }

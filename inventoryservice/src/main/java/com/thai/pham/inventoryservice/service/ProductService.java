@@ -46,4 +46,16 @@ public class ProductService {
         Product product = productRepo.findProductById(productId);
         return product != null ? productInventoryDetailMapper.mapObject(product) : null;
     }
+
+    @Transactional(readOnly = false)
+    public ProductInventoryDetailDto createProducts(ProductInventoryDetailDto productDto) {
+        Product newProductItem = new Product();
+        newProductItem.setProductName(productDto.getProductName());
+        newProductItem.setProductAttributes(
+            new ProductAttributes(productDto.getProductColor(), productDto.getSize())
+        );
+        newProductItem.setSku(productDto.getSku());
+        productRepo.persist(newProductItem);
+        return productInventoryDetailMapper.mapObject(newProductItem);
+    }
 }

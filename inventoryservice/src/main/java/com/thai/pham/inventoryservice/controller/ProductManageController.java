@@ -46,9 +46,9 @@ public class ProductManageController {
 
     @PutMapping("/new")
     public ResponseEntity<ProductInventoryDetailDto> createNewProduct(
-            @RequestBody List<ProductInventoryDetailDto> products
+            @RequestBody ProductInventoryDetailDto products
     ) {
-        List<ProductInventoryDetailDto> createdResult = productService.createProducts(products);
+        ProductInventoryDetailDto createdResult = productService.createProducts(products);
         return ResponseEntity.ok(createdResult);
     }
 
