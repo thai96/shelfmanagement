@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 public class ProductUpdateDto implements Serializable {
+    private UUID id;
     private String productName;
     private String sku;
     private String color;

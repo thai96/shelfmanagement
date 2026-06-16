@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 @Data
 public class InventoryUpdateDto implements Serializable {
+    private UUID id;
     private LocationDto location;
     private Integer qtyAvailable;
     private Integer qtyOnHand;

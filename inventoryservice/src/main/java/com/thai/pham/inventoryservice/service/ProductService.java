@@ -20,14 +20,16 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class ProductService {
     private final ProductInventoryDetailMapper productInventoryDetailMapper;
+    private final ProductUpdateDtoMapper productUpdateDtoMapper;
     private final ProductRepository productRepo;
 
     private static final Integer DEFAULT_PAGE_SIZE = 20;
 
     @Autowired
-    public ProductService(ProductRepository productRepo, ProductInventoryDetailMapper productInventoryDetailMapper) {
+    public ProductService(ProductRepository productRepo, ProductInventoryDetailMapper productInventoryDetailMapper, ProductUpdateDtoMapper productUpdateDtoMapper) {
         this.productRepo = productRepo;
         this.productInventoryDetailMapper = productInventoryDetailMapper;
+        this.productUpdateDtoMapper = productUpdateDtoMapper;
     }
 
     public List<Product> getAllProduct() {
@@ -76,5 +78,20 @@ public class ProductService {
         }
         productRepo.deleteById(productId);
         return productRepo.existsById(productId);
+    }
+
+    @Transactional(readOnly = false)
+    public ProductUpdateDto updateOrInsertProduct(ProductUpdateDto productUpdateDto) {
+        Product product = productUpdateDtoMapper.mapEntity(productUpdateDto);
+        Product savedProduct = productRepo.findById(productUpdateDto.getId());
+        copyNonNullData(product, savedProduct);
+        return productRepo.saveAndFlush(product);
+    }
+
+    private void copyNonNullData(Product rootItem, Product checkItem) {
+        Optional.ofNullable(checkItem.getQtyOnHand()).ifPresent(rootItem::setQtyOnHand);
+        Optional.ofNullable(checkItem.getQtyReserved()).ifPresent(rootItem::setQtyReserved);
+        Optional.ofNullable(checkItem.getQtyAvailable()).ifPresent(rootItem::setQtyAvailable);
+        Optional.ofNullable(checkItem.getLocation()).ifPresent(rootItem::setLocation);    
     }
 }

@@ -8,6 +8,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 public class LocationDto implements Serializable {
+    UUID id;
     String name;
     String locationType;
     Boolean isActive;
