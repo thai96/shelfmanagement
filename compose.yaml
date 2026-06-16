@@ -8,12 +8,12 @@ volumes:
   db-data:
 
 services:
-  storage-routing-service:
-    container_name: storage-routing-service
+  inventoryservice:
+    container_name: inventoryservice
     build:
-      context: ./storage-routing-service
+      context: ./inventoryservice
       dockerfile: Dockerfile
-    image: thaipham/persistent-data
+    image: thaipham/inventoryservice
     ports:
       - "1999:1999"
     networks:
@@ -74,6 +74,11 @@ services:
       - POSTGRESQL_DATABASE=${POSTGRES_DB}
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   x-pg-slave-config: &pg-slave-config
     image: bitnami/postgresql:latest
@@ -89,7 +94,12 @@ services:
       - POSTGRESQL_DATABASE=${POSTGRES_DB}
       - POSTGRESQL_MASTER_HOST=pg-master
       - POSTGRESQL_MASTER_PORT_NUMBER=5432
-    
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   pg-slave-1:
     <<: *pg-slave-config
     ports: ["5433:5432"]
