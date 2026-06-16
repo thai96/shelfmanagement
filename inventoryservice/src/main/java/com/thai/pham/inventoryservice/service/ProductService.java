@@ -1,8 +1,10 @@
 package com.thai.pham.inventoryservice.service;
 
 import com.thai.pham.inventoryservice.dto.ProductInventoryDetailDto;
+import com.thai.pham.inventoryservice.dto.ProductUpdateDto;
 import com.thai.pham.inventoryservice.entity.Product;
 import com.thai.pham.inventoryservice.entity.ProductAttributes;
+import com.thai.pham.inventoryservice.mapper.ProductUpdateDtoMapper;
 import com.thai.pham.inventoryservice.repository.ProductRepository;
 import com.thai.pham.inventoryservice.mapper.ProductInventoryDetailMapper;
 
@@ -83,15 +85,7 @@ public class ProductService {
     @Transactional(readOnly = false)
     public ProductUpdateDto updateOrInsertProduct(ProductUpdateDto productUpdateDto) {
         Product product = productUpdateDtoMapper.mapEntity(productUpdateDto);
-        Product savedProduct = productRepo.findById(productUpdateDto.getId());
-        copyNonNullData(product, savedProduct);
-        return productRepo.saveAndFlush(product);
+        return productUpdateDtoMapper.mapObject(productRepo.saveAndFlush(product));
     }
 
-    private void copyNonNullData(Product rootItem, Product checkItem) {
-        Optional.ofNullable(checkItem.getQtyOnHand()).ifPresent(rootItem::setQtyOnHand);
-        Optional.ofNullable(checkItem.getQtyReserved()).ifPresent(rootItem::setQtyReserved);
-        Optional.ofNullable(checkItem.getQtyAvailable()).ifPresent(rootItem::setQtyAvailable);
-        Optional.ofNullable(checkItem.getLocation()).ifPresent(rootItem::setLocation);    
-    }
 }

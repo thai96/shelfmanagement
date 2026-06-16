@@ -2,11 +2,13 @@ package com.thai.pham.inventoryservice.mapper;
 
 import com.thai.pham.inventoryservice.dto.LocationDto;
 import com.thai.pham.inventoryservice.entity.Location;
+import com.thai.pham.inventoryservice.entity.LocationType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LocationDtoMapper {
-    private LocationType.LocationTypeConverter typeConverter;
+    private final LocationType.LocationTypeConverter typeConverter;
 
     @Autowired
     public LocationDtoMapper(LocationType.LocationTypeConverter typeConverter) {
@@ -15,17 +17,20 @@ public class LocationDtoMapper {
 
     public LocationDto mapObject(Location location) {
         return new LocationDto(
-            location.getId(),
-            location.getName(),
-            typeConverter.convertToDatabaseColumn(location.getLocationType()),
-            location.getIsActive()
+                location.getId(),
+                location.getName(),
+                typeConverter.convertToDatabaseColumn(location.getLocationType()),
+                location.getIsActive()
         );
     }
 
     public Location mapEntity(LocationDto locationDto) {
         LocationType type = typeConverter.convertToEntityAttribute(locationDto.getLocationType());
         return new Location(
-            locationDto.getId(),
-        );   
+                locationDto.getId(),
+                locationDto.getName(),
+                type,
+                locationDto.getIsActive()
+        );
     }
 }

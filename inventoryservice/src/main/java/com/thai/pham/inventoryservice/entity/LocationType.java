@@ -31,7 +31,7 @@ public enum LocationType {
         }
 
         @Override
-        public LocationType typeConverter(String locationType) {
+        public LocationType convertToEntityAttribute(String locationType) {
             return valueMapping.getOrDefault(locationType, null);
         }
     }

@@ -1,6 +1,7 @@
 package com.thai.pham.inventoryservice.controller;
 
 import com.thai.pham.inventoryservice.dto.ProductInventoryDetailDto;
+import com.thai.pham.inventoryservice.dto.ProductUpdateDto;
 import com.thai.pham.inventoryservice.mapper.PageDtoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -62,7 +63,7 @@ public class ProductManageController {
 
     @PostMapping("/update")
     public ResponseEntity<ProductUpdateDto> updateProduct(
-        @RequestBody("updateData") ProductUpdateDto productUpdateDto
+        @RequestBody ProductUpdateDto productUpdateDto
     ) {
         ProductUpdateDto updatedData = productService.updateOrInsertProduct(productUpdateDto);
         return ResponseEntity.ok(updatedData);

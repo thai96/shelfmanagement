@@ -1,12 +1,17 @@
 package com.thai.pham.inventoryservice.keygenerator;
 
+import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.UUID;
+
 @Component("productKeyGenerator")
-public class ProductPageKeyGenerator implements KeyGenerator {
-    private final String CUSTOM_KEY_GENERATOR = ":";
-    private final String SORT_KEY_DIVIDER = ";";
-    private final String INVENTORY_SERVICE_CACHE_PREFIX = "inventoryservice";
-    private final String PRODUCT_SERVICE_CACHE_PREFIX = "product";
-    private final String PRODUCT_SERVICE_ID_CACHE_PREFIX = "id";
+public class SingleProductKeyGenerator implements KeyGenerator {
+    private static final String CUSTOM_KEY_GENERATOR = ":";
+    private static final String INVENTORY_SERVICE_CACHE_PREFIX = "inventoryservice";
+    private static final String PRODUCT_SERVICE_CACHE_PREFIX = "product";
+    private static final String PRODUCT_SERVICE_ID_CACHE_PREFIX = "id";
 
     @Override
     public Object generate(Object target, Method method, Object... params) {

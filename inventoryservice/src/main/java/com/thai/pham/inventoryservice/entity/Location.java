@@ -56,4 +56,11 @@ public class Location {
         orphanRemoval = true
     )
     private List<StockTransfer> incomingTransfer;
+
+    public Location(UUID id, String name, LocationType locationType, Boolean isActive) {
+        this.id = id;
+        this.name = name;
+        this.locationType = locationType;
+        this.isActive = isActive;
+    }
 }
