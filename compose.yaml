@@ -7,6 +7,26 @@ networks:
 volumes:
   db-data:
 
+x-pg-slave-config: &pg-slave-config
+  image: bitnami/postgresql:latest
+  depends_on:
+    pg-master:
+      condition: service_healthy
+  environment:
+    - POSTGRESQL_REPLICATION_MODE=slave
+    - POSTGRESQL_REPLICATION_USER=${POSTGRES_REP_USER}
+    - POSTGRESQL_REPLICATION_PASSWORD=${POSTGRES_REP_PASSWORD}
+    - POSTGRESQL_USERNAME=${POSTGRES_USER}
+    - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}
+    - POSTGRESQL_DATABASE=${POSTGRES_DB}
+    - POSTGRESQL_MASTER_HOST=pg-master
+    - POSTGRESQL_MASTER_PORT_NUMBER=5432
+  healthcheck:
+    test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+
 services:
   inventoryservice:
     container_name: inventoryservice
@@ -16,8 +36,8 @@ services:
     image: thaipham/inventoryservice
     ports:
       - "1999:1999"
-    networks:
-      - app-net
+    # networks:
+    #   - app-net
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
@@ -76,26 +96,6 @@ services:
       - "5432:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
-  x-pg-slave-config: &pg-slave-config
-    image: bitnami/postgresql:latest
-    depends_on:
-      pg-master:
-        condition: service_healthy
-    environment:
-      - POSTGRESQL_REPLICATION_MODE=slave
-      - POSTGRESQL_REPLICATION_USER=${POSTGRES_REP_USER}
-      - POSTGRESQL_REPLICATION_PASSWORD=${POSTGRES_REP_PASSWORD}
-      - POSTGRESQL_USERNAME=${POSTGRES_USER}
-      - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRESQL_DATABASE=${POSTGRES_DB}
-      - POSTGRESQL_MASTER_HOST=pg-master
-      - POSTGRESQL_MASTER_PORT_NUMBER=5432
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
       interval: 10s
       timeout: 5s
       retries: 5
