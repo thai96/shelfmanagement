@@ -6,7 +6,7 @@ WORKDIR /app
 
 # Copy file .jar sau khi build vào trong container
 # Đảm bảo bạn đã chạy 'mvn clean package' trước đó
-COPY build/libs/*.jar app.jar
+COPY build/libs/*SNAPSHOT.jar app.jar
 
 # Mở port 8080 để có thể truy cập từ bên ngoài
 EXPOSE 8080
