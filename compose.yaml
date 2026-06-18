@@ -35,14 +35,18 @@ services:
       dockerfile: Dockerfile
     image: thaipham/inventoryservice
     ports:
-      - "1999:1999"
+      - "${INVENTORY_SERVER_PORT}:1999"
     # networks:
     #   - app-net
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
-      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      DB_URL: jdbc:postgresql://pg-master:5432/${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASS: ${POSTGRES_PASSWORD}
+      DB_PORT: 5432
+      REDIS_PORT: 6379
+      REDIS_HOST: localhost
+      INVENTORY_SERVER_PORT: ${INVENTORY_SERVER_PORT}
     depends_on:
       pg-master:
         condition: service_healthy
