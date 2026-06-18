@@ -17,7 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
-
+//**
+* cách cache: 2-tier caching cho page
+* cache product theo từng item và update
+* on delete: check phương pháp mutex lock , soft-delete hoặc stale while revalidate, cursor-based pagination
+*/
 @Service
 @Transactional(readOnly = true)
 public class ProductService {
