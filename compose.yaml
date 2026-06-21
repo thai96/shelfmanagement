@@ -9,6 +9,7 @@ volumes:
 
 x-pg-slave-config: &pg-slave-config
   image: bitnami/postgresql:latest
+  restart: on-failure
   depends_on:
     pg-master:
       condition: service_healthy
@@ -26,6 +27,7 @@ x-pg-slave-config: &pg-slave-config
     interval: 10s
     timeout: 5s
     retries: 5
+    start_period: 30s
 
 services:
   inventoryservice:
@@ -40,7 +42,7 @@ services:
     #   - app-net
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
-      DB_URL: jdbc:postgresql://pg-master:5432/${POSTGRES_DB}
+      DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASS: ${POSTGRES_PASSWORD}
       DB_PORT: 5432
@@ -53,40 +55,20 @@ services:
         condition: service_healthy
       pg-slave-1:
         condition: service_healthy
-      pg-slave-2:
-        condition: service_healthy
-      pg-slave-3:
-        condition: service_healthy
-      pg-slave-4:
-        condition: service_healthy
-      pg-slave-5:
-        condition: service_healthy
+#      pg-slave-2:
+#        condition: service_healthy
+#      pg-slave-3:
+#        condition: service_healthy
+#      pg-slave-4:
+#        condition: service_healthy
+#      pg-slave-5:
+#        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:1999/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
-
-#  db:
-#    container_name: postgres-container
-#    image: postgres:15-alpine
-#    environment:
-#      POSTGRES_USER: ${POSTGRES_USER}
-#      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-#      POSTGRES_DB: ${POSTGRES_DB}
-#    ports:
-#      - "5432:5432"
-#    volumes:
-#      - db-data:/var/lib/postgresql/data
-#      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
-#    networks:
-#      - app-net
-#    healthcheck:
-#      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
-#      interval: 10s
-#      timeout: 5s
-#      retries: 5
 
   pg-master:
     image: bitnami/postgresql:latest
@@ -109,21 +91,21 @@ services:
     <<: *pg-slave-config
     ports: ["5433:5432"]
   
-  pg-slave-2:
-    <<: *pg-slave-config
-    ports: ["5434:5432"]
-
-  pg-slave-3:
-    <<: *pg-slave-config
-    ports: ["5435:5432"]
-
-  pg-slave-4:
-    <<: *pg-slave-config
-    ports: ["5436:5432"]
-
-  pg-slave-5:
-    <<: *pg-slave-config
-    ports: ["5437:5432"]
+#  pg-slave-2:
+#    <<: *pg-slave-config
+#    ports: ["5434:5432"]
+#
+#  pg-slave-3:
+#    <<: *pg-slave-config
+#    ports: ["5435:5432"]
+#
+#  pg-slave-4:
+#    <<: *pg-slave-config
+#    ports: ["5436:5432"]
+#
+#  pg-slave-5:
+#    <<: *pg-slave-config
+#    ports: ["5437:5432"]
 
   redis:
     image: redis:8.6.4
