@@ -77,6 +77,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = false)
+    @CacheEvict(name = "product", keyGenerator = "productKeyGenerator")
     public Boolean deleteProductById(UUID productId) {
         Product product = productRepo.findProductById(productId);
         if(product == null) {
