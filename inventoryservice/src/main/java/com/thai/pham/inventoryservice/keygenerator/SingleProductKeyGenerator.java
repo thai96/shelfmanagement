@@ -10,6 +10,8 @@ import java.util.UUID;
 public class SingleProductKeyGenerator implements KeyGenerator {
     private static final String CUSTOM_KEY_GENERATOR = ":";
     private static final String INVENTORY_SERVICE_CACHE_PREFIX = "inventoryservice";
+    private static final String INVENTORY_SERVICE_API_PREFIX = "api";
+    private static final String INVENTORY_SERVICE_VERSION = "v1";
     private static final String PRODUCT_SERVICE_CACHE_PREFIX = "product";
     private static final String PRODUCT_SERVICE_ID_CACHE_PREFIX = "id";
 
@@ -17,18 +19,24 @@ public class SingleProductKeyGenerator implements KeyGenerator {
     public Object generate(Object target, Method method, Object... params) {
         StringBuilder keyBuilder = new StringBuilder(INVENTORY_SERVICE_CACHE_PREFIX);
         
-        keyBuilder.append(CUSTOM_KEY_GENERATOR).append(PRODUCT_SERVICE_CACHE_PREFIX);
+        keyBuilder
+            .append(CUSTOM_KEY_GENERATOR).append(INVENTORY_SERVICE_API_PREFIX)
+            .append(CUSTOM_KEY_GENERATOR).append(INVENTORY_SERVICE_VERSION)
+            .append(CUSTOM_KEY_GENERATOR).append(PRODUCT_SERVICE_CACHE_PREFIX);
         for(Object param : params) {
             if(param == null) {
                 continue;
             }
             
             if(param instanceof UUID) {
-                keyBuilder.append(CUSTOM_KEY_GENERATOR).append(PRODUCT_SERVICE_ID_CACHE_PREFIX)
-                .append(CUSTOM_KEY_GENERATOR).append(param.toString());
-                continue;
+                keyBuilder.append(CUSTOM_KEY_GENERATOR).append(param.toString());
+                break;
             }
-            keyBuilder.append(CUSTOM_KEY_GENERATOR).append(param.toString());
+
+            if(param instanceof Product) {
+                keyBuilder.append(CUSTOM_KEY_GENERATOR).append(param.getId().toString());
+                break;
+            }
         }
         
         return keyBuilder.toString();
