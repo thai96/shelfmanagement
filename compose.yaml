@@ -69,7 +69,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
+    logging:
+      driver: "json-file"
+      
   pg-master:
     image: bitnami/postgresql:latest
     environment:
