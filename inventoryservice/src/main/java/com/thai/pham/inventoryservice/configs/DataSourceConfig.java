@@ -1,6 +1,8 @@
 package com.thai.pham.inventoryservice.configs;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,12 +16,13 @@ import java.util.Map;
 
 @Configuration
 public class DataSourceConfig {
+    private static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
     private final String masterUrl;
     private final String slave1Url;
-    private final String slave2Url;
-    private final String slave3Url;
-    private final String slave4Url;
-    private final String slave5Url;
+//    private final String slave2Url;
+//    private final String slave3Url;
+//    private final String slave4Url;
+//    private final String slave5Url;
     private final String userName;
     private final String password;
     private final String driverClassName;
@@ -30,10 +33,6 @@ public class DataSourceConfig {
     public DataSourceConfig(
         @Value("${database.master.url}") String masterUrl,
         @Value("${database.slaves.slave1.url}") String slave1Url,
-        @Value("${database.slaves.slave2.url}") String slave2Url,
-        @Value("${database.slaves.slave3.url}") String slave3Url,
-        @Value("${database.slaves.slave4.url}") String slave4Url,
-        @Value("${database.slaves.slave5.url}") String slave5Url,
         @Value("${spring.datasource.username}") String userName,
         @Value("${spring.datasource.password}") String password,
         @Value("${spring.datasource.driver-class-name}") String driverClassName,
@@ -42,28 +41,44 @@ public class DataSourceConfig {
     ) {
         this.masterUrl = masterUrl;
         this.slave1Url = slave1Url;
-        this.slave2Url = slave2Url;
-        this.slave3Url = slave3Url;
-        this.slave4Url = slave4Url;
-        this.slave5Url = slave5Url;
+//        this.slave2Url = slave2Url;
+//        this.slave3Url = slave3Url;
+//        this.slave4Url = slave4Url;
+//        this.slave5Url = slave5Url;
         this.userName = userName;
         this.password = password;
         this.driverClassName = driverClassName;
         this.maximumConnections = maximumConnections;
         this.leakThresholdInMillis = leakThresholdInMillis;
+        log.info("_______Configuration log_______");
+        log.info("master url {}", masterUrl);
+        log.info("slave url {}", slave1Url);
+        log.info("userName {}", userName);
+        log.info("password {}", password);
+        log.info("driverClassName {}", driverClassName);
+        log.info("maximumConnections {}", maximumConnections);
+        log.info("leakThresholdInMillis {}", leakThresholdInMillis);
     }
 
     @Bean
     public DataSource routingDataSource() {
         Map<Object, Object> targetDataSources = new HashMap<>();
-        
+        log.info("_______DB Info Log_______");
+        log.info("master url {}", masterUrl);
+        log.info("slave url {}", slave1Url);
+        log.info("userName {}", userName);
+        log.info("password {}", password);
+        log.info("driverClassName {}", driverClassName);
+        log.info("maximumConnections {}", maximumConnections);
+        log.info("leakThresholdInMillis {}", leakThresholdInMillis);
+
         DataSource master = createDataSource(masterUrl);
         targetDataSources.put("master", master);
         targetDataSources.put("slave1", createDataSource(slave1Url));
-        targetDataSources.put("slave2", createDataSource(slave2Url));
-        targetDataSources.put("slave3", createDataSource(slave3Url));
-        targetDataSources.put("slave4", createDataSource(slave4Url));
-        targetDataSources.put("slave5", createDataSource(slave5Url));
+//        targetDataSources.put("slave2", createDataSource(slave2Url));
+//        targetDataSources.put("slave3", createDataSource(slave3Url));
+//        targetDataSources.put("slave4", createDataSource(slave4Url));
+//        targetDataSources.put("slave5", createDataSource(slave5Url));
 
         ReadRoutingDataSource routingDataSource = new ReadRoutingDataSource();
         routingDataSource.setDefaultTargetDataSource(master);
