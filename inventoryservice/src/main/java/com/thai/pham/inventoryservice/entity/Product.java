@@ -38,4 +38,11 @@ public class Product {
         orphanRemoval = true
     )
     private List<Inventory> inventory;
+
+    public Product(UUID id, String sku, String productName, ProductAttributes productAttributes) {
+        this.id = id;
+        this.sku = sku;
+        this.productName = productName;
+        this.productAttributes = productAttributes;
+    }
 }
