@@ -1,18 +1,27 @@
 # Sử dụng base image là Java 17 bản rút gọn (Alpine) cho nhẹ
-FROM eclipse-temurin:17-jdk-alpine AS builder
+FROM gradle:9.5.1-jdk17-alpine AS builder
 
+ENV APP_HOME=/usr/app/
 # Cấu hình thư mục làm việc bên trong container
-WORKDIR /builder
-COPY . .
+WORKDIR $APP_HOME
 ENV JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
+COPY build.gradle settings.gradle $APP_HOME
+COPY ./inventoryservice/build.gradle $APP_HOME/inventoryservice/
+COPY gradle $APP_HOME/gradle
+COPY /inventoryservice/gradle $APP_HOME/inventoryservice/gradle
+COPY --chown=gradle:gradle . /home/gradle/src
+USER root
+RUN chown -R gradle /home/gradle/src
 
-RUN ./gradlew bootJar -x test
+COPY ./inventoryservice/ ./inventoryservice/
+RUN gradle clean :inventoryservice:bootJar -x test
 
 # Copy file .jar sau khi build vào trong container
 # Đảm bảo bạn đã chạy 'mvn clean package' trước đó
 FROM eclipse-temurin:17-jre-alpine
-WORKDIR /app
-COPY --from=builder /builder/build/libs/*SNAPSHOT.jar app.jar
+ENV APP_HOME=/usr/app/
+WORKDIR $APP_HOME
+COPY --from=builder $APP_HOME/inventoryservice/build/libs/*SNAPSHOT.jar app.jar
 
 # Mở port 8080 để có thể truy cập từ bên ngoài
 EXPOSE 8080
