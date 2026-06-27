@@ -42,7 +42,17 @@ public class InventoryService {
                                                 Optional.ofNullable(changeLookUpMap.get(inventory.getId()))
                                                 .map(changeData -> processInventoryChange(inventory, changeData.getChangeType(), changeData.getChangeQty())).orElse(inventory)
                                             ).toList();
-        return inventoryRepo.saveAll(changeInventory).map(inventoryMapper::mapObject).toList();
+        Set<UUID> changeSet = changeInventory.stream().map(item -> item.getId()).collect(Collectors.toSet());
+        List<Inventory> newInventory = dataChangeList.stream().map(inventoryMapper::mapEntity)
+                                    .filter(item -> !changeSet.contains(item.getId()))
+                                    .map(item -> {
+                                        item.setId(null);
+                                        return item;
+                                    }).toList();
+        List<Inventory> updatingInventory = new LinkedList();
+        updatingInventory.addAll(changeInventory);
+        updatingInventory.addAll(newInventory);
+        return inventoryRepo.saveAll(updatingInventory).map(inventoryMapper::mapObject).toList();
     }
 
     private Inventory processInventoryChange(Inventory inventory, InventoryChangeType changeType, int changeQty) {
