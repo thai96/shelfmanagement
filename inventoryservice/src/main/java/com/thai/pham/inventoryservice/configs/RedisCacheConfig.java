@@ -12,7 +12,27 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 
 @Configuration
+@ConfigurationProperties(prefix = "spring.redis")
 public class RedisCacheConfig {
+    private String host;
+    private Integer port;
+
+    @Autowired
+    public RedisCacheConfig(
+        @Value("${spring.data.redis.host}") String host,
+        @Value("${spring.data.redis.port}") Integer port
+    ) {
+        this.host = host;
+        this.port = port;
+    }
+
+    @Bean
+    public LettuceConnectionFactory redisConnectionFactory() {
+        LettuceConnectionFactory factory = new LettuceConnectionFactory(host, port);
+        factory.setShareNativeConnection(true); 
+        return factory;
+    }
+
     @Bean
     public RedisCacheManager cacheConfiguration(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()

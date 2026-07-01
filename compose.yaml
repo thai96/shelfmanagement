@@ -46,8 +46,8 @@ services:
       DB_USER: ${POSTGRES_USER}
       DB_PASS: ${POSTGRES_PASSWORD}
       DB_PORT: 5432
-      REDIS_PORT: 6379
-      REDIS_HOST: localhost
+      REDIS_PORT: ${SPRING_REDIS_PORT}
+      REDIS_HOST: redis
       INVENTORY_SERVER_PORT: ${INVENTORY_SERVER_PORT}
       INVENTORY_DOC_PATH: ${INVENTORY_DOC_PATH}
     depends_on:
@@ -71,7 +71,7 @@ services:
       retries: 5
     logging:
       driver: "json-file"
-      
+
   pg-master:
     image: bitnami/postgresql:latest
     environment:
@@ -110,6 +110,7 @@ services:
 #    ports: ["5437:5432"]
 
   redis:
+    container_name: redis
     image: redis:8.6.4
     ports:
-      - "6379:6379"
+      - "${SPRING_REDIS_PORT}:${SPRING_REDIS_PORT}"
