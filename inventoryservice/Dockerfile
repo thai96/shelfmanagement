@@ -22,9 +22,9 @@ FROM eclipse-temurin:17-jre-alpine
 ENV APP_HOME=/usr/app/
 WORKDIR $APP_HOME
 COPY --from=builder $APP_HOME/inventoryservice/build/libs/*SNAPSHOT.jar app.jar
-
+RUN apk add --no-cache curl
 # Mở port 8080 để có thể truy cập từ bên ngoài
-EXPOSE 8080
+EXPOSE $INVENTORY_SERVER_PORT
 
 # Lệnh để chạy ứng dụng khi container khởi động
 ENTRYPOINT ["java", "-jar", "app.jar"]

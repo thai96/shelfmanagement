@@ -1,10 +1,14 @@
 package com.thai.pham.inventoryservice.configs;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -14,8 +18,8 @@ import java.time.Duration;
 @Configuration
 @ConfigurationProperties(prefix = "spring.redis")
 public class RedisCacheConfig {
-    private String host;
-    private Integer port;
+    private final String host;
+    private final Integer port;
 
     @Autowired
     public RedisCacheConfig(
@@ -29,7 +33,7 @@ public class RedisCacheConfig {
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         LettuceConnectionFactory factory = new LettuceConnectionFactory(host, port);
-        factory.setShareNativeConnection(true); 
+        factory.setShareNativeConnection(true);
         return factory;
     }
 
@@ -39,7 +43,7 @@ public class RedisCacheConfig {
                 .entryTtl(Duration.ofMinutes(10))
                 .disableCachingNullValues()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new JacksonJsonRedisSerializer<Object>(Object.class)));
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new JacksonJsonRedisSerializer<>(Object.class)));
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(cacheConfiguration).build();
     }

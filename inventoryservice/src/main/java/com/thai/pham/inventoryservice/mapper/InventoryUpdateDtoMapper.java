@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Component
 public class InventoryUpdateDtoMapper {
-    private LocationDtoMapper locationMapper;
+    private final LocationDtoMapper locationMapper;
 
     @Autowired
     public InventoryUpdateDtoMapper(LocationDtoMapper locationMapper) {

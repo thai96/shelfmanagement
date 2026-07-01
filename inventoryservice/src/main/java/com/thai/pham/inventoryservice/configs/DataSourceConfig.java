@@ -25,6 +25,8 @@ public class DataSourceConfig {
 //    private final String slave5Url;
     private final String userName;
     private final String password;
+    private final String userNameSlave;
+    private final String passwordSlave;
     private final String driverClassName;
     private final Integer maximumConnections; // Maximum NUMBER OF connection in the pool at the same time
     private final Integer leakThresholdInMillis; // Log possible leak connection
@@ -35,6 +37,8 @@ public class DataSourceConfig {
         @Value("${database.slaves.slave1.url}") String slave1Url,
         @Value("${spring.datasource.username}") String userName,
         @Value("${spring.datasource.password}") String password,
+        @Value("${spring.datasource.slave.username}") String userNameSlave,
+        @Value("${spring.datasource.slave.password}") String passwordSlave,
         @Value("${spring.datasource.driver-class-name}") String driverClassName,
         @Value("${spring.datasource.hikari.maximum-pool-size}") Integer maximumConnections,
         @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer leakThresholdInMillis
@@ -47,6 +51,8 @@ public class DataSourceConfig {
 //        this.slave5Url = slave5Url;
         this.userName = userName;
         this.password = password;
+        this.userNameSlave = userNameSlave;
+        this.passwordSlave = passwordSlave;
         this.driverClassName = driverClassName;
         this.maximumConnections = maximumConnections;
         this.leakThresholdInMillis = leakThresholdInMillis;
@@ -55,6 +61,8 @@ public class DataSourceConfig {
         log.info("slave url {}", slave1Url);
         log.info("userName {}", userName);
         log.info("password {}", password);
+        log.info("userNameSlave {}", userNameSlave);
+        log.info("passwordSlave {}", passwordSlave);
         log.info("driverClassName {}", driverClassName);
         log.info("maximumConnections {}", maximumConnections);
         log.info("leakThresholdInMillis {}", leakThresholdInMillis);
@@ -68,13 +76,15 @@ public class DataSourceConfig {
         log.info("slave url {}", slave1Url);
         log.info("userName {}", userName);
         log.info("password {}", password);
+        log.info("userNameSlave {}", userNameSlave);
+        log.info("passwordSlave {}", passwordSlave);
         log.info("driverClassName {}", driverClassName);
         log.info("maximumConnections {}", maximumConnections);
         log.info("leakThresholdInMillis {}", leakThresholdInMillis);
 
-        DataSource master = createDataSource(masterUrl);
+        DataSource master = createDataSource(masterUrl, userName, password);
         targetDataSources.put("master", master);
-        targetDataSources.put("slave1", createDataSource(slave1Url));
+        targetDataSources.put("slave1", createDataSource(slave1Url, userNameSlave, passwordSlave));
 //        targetDataSources.put("slave2", createDataSource(slave2Url));
 //        targetDataSources.put("slave3", createDataSource(slave3Url));
 //        targetDataSources.put("slave4", createDataSource(slave4Url));
@@ -94,7 +104,7 @@ public class DataSourceConfig {
         return new LazyConnectionDataSourceProxy(routingDataSource);// Prevent Spring from grabbing db connection when execute transaction until execute SQL statement
     }
 
-    private DataSource createDataSource(String dataSourceUrl) {
+    private DataSource createDataSource(String dataSourceUrl, String userName, String password) {
         HikariDataSource dataSource = new HikariDataSource();
         dataSource.setJdbcUrl(dataSourceUrl);
         dataSource.setUsername(userName);

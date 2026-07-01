@@ -3,17 +3,11 @@ package com.thai.pham.inventoryservice.mapper;
 import com.thai.pham.inventoryservice.dto.LocationDto;
 import com.thai.pham.inventoryservice.entity.Location;
 import com.thai.pham.inventoryservice.entity.LocationType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class LocationDtoMapper {
-    private final LocationType.LocationTypeConverter typeConverter;
-
-    @Autowired
-    public LocationDtoMapper(LocationType.LocationTypeConverter typeConverter) {
-        this.typeConverter = typeConverter;
-    }
+    private final LocationType.LocationTypeConverter typeConverter = new LocationType.LocationTypeConverter();
 
     public LocationDto mapObject(Location location) {
         return new LocationDto(
