@@ -28,30 +28,49 @@ public class ProductService {
     private final ProductInventoryDetailMapper productInventoryDetailMapper;
     private final ProductUpdateDtoMapper productUpdateDtoMapper;
     private final ProductRepository productRepo;
+    private final RedisService redisService;
+    private final ProductKeyGenerator productKeyGenerator;
 
     private static final Integer DEFAULT_PAGE_SIZE = 20;
 
     @Autowired
-    public ProductService(ProductRepository productRepo, ProductInventoryDetailMapper productInventoryDetailMapper, ProductUpdateDtoMapper productUpdateDtoMapper) {
+    public ProductService(ProductRepository productRepo, ProductInventoryDetailMapper productInventoryDetailMapper, ProductUpdateDtoMapper productUpdateDtoMapper, RedisService redisService, ProductKeyGenerator productKeyGenerator) {
         this.productRepo = productRepo;
         this.productInventoryDetailMapper = productInventoryDetailMapper;
         this.productUpdateDtoMapper = productUpdateDtoMapper;
+        this.redisService = redisService;
+        this.productKeyGenerator = productKeyGenerator;
     }
 
-    public List<Product> getAllProduct() {
-        return productRepo.findAll();
+    private void cacheProductPage(String searchTerm, Page<Product> productPage, Pageable pageable) {
+        String pageKey = productKeyGenerator.generatePageKey(searchTerm, pageable);
+        List<UUID> idList = productPage.getContent().stream().map(Product::getId).toList();
+        redisService.saveItemIds(pageKey, idList);
+        Map<String, Product> productKeyMap = productPage.getContent().parallelStream().collect(Collectors.toMap(
+            redisService::generateSingleProductKey,
+            Function.identity()
+        ));
+        redisService.saveProducts(productKeyMap);
+    }
+
+    public List<Product> getAllProduct(Pageable pageable) {
+        Page<Product> productPage = productRepo.findAll(pageable);
+        cacheProductPage("", productPage, pageable);
+        return productPage;
     }
 
     public Page<Product> getAllVariationOfProduct(String productName, Pageable pageable) {
-        return productRepo.findProductByProductNameContaining(productName, pageable);
+        Page<Product> productPage = productRepo.findProductByProductNameContaining(productName, pageable);
+        cacheProductPage("", productPage, pageable);
+        return productPage;
     }
 
 //    @Cacheable(keyGenerator="productPageKeyGenerator")
     public Page<Product> findAllProductByName(String searchTerm, Pageable pageable) {
-        if(isStringEmpty(searchTerm)) {
-            return productRepo.findAll(pageable);
-        }
-        return productRepo.findProductByProductNameContaining(searchTerm, pageable);
+        Page<Product> productPage = isStringEmpty(searchTerm) ? productRepo.findAll(pageable) :
+            productRepo.findProductByProductNameContaining(searchTerm, pageable);
+        cacheProductPage(searchTerm, productPage, pageable);
+        return productPage;
     }
 
     private boolean isStringEmpty(String content) {

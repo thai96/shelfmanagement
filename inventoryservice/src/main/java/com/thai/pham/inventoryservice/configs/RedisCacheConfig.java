@@ -47,4 +47,11 @@ public class RedisCacheConfig {
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(cacheConfiguration).build();
     }
+
+    @Bean("uuidRedisTemplate")
+    public RedisTemplate<String, UUID> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, String> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        return template;
+    }
 }
