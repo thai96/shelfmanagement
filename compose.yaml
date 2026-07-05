@@ -22,6 +22,7 @@ x-pg-slave-config: &pg-slave-config
     - POSTGRESQL_DATABASE=${POSTGRES_DB}
     - POSTGRESQL_MASTER_HOST=pg-master
     - POSTGRESQL_MASTER_PORT_NUMBER=5432
+    - POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS=${POSTGRES_TOTAL_REP}
   healthcheck:
     test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER}" ]
     interval: 10s
@@ -45,8 +46,8 @@ services:
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASS: ${POSTGRES_PASSWORD}
-      DB_SLAVE_USER: ${POSTGRES_REP_USER}
-      DB_SLAVE_PASS: ${POSTGRES_REP_PASSWORD}
+      DB_SLAVE_USER: ${POSTGRES_READ_ONLY_USER}
+      DB_SLAVE_PASS: ${POSTGRES_READ_ONLY_PASSWORD}
       DB_PORT: 5432
       REDIS_PORT: ${SPRING_REDIS_PORT}
       REDIS_HOST: redis
@@ -82,7 +83,12 @@ services:
       - POSTGRESQL_REPLICATION_PASSWORD=${POSTGRES_REP_PASSWORD}
       - POSTGRESQL_USERNAME=${POSTGRES_USER}
       - POSTGRESQL_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRESQL_POSTGRES_PASSWORD=${POSTGRES_SUPERUSER_PASSWORD}
+      - POSTGRESQL_INITSCRIPTS_USERNAME=postgres
+      - POSTGRESQL_INITSCRIPTS_PASSWORD=${POSTGRES_SUPERUSER_PASSWORD}
       - POSTGRESQL_DATABASE=${POSTGRES_DB}
+      - POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS=${POSTGRES_TOTAL_REP}
+      - BITNAMI_DEBUG=true
     ports:
       - "5432:5432"
     healthcheck:
@@ -90,7 +96,8 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
+    volumes:
+      - ./database/:/${POSTGRES_INIT_DIR}/
   pg-slave-1:
     <<: *pg-slave-config
     ports: ["5433:5432"]
