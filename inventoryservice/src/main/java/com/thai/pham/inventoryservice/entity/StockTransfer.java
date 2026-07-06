@@ -37,4 +37,9 @@ public class StockTransfer {
     )
     @JoinColumn(name = "to_location", referencedColumnName = "id")
     private Location toLocation;
+
+    public StockTransfer(UUID id, TransferStatus transferStatus) {
+        this.id = id;
+        this.transferStatus = transferStatus;
+    }
 }

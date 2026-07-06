@@ -1,22 +1,21 @@
 package com.thai.pham.inventoryservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.thai.pham.inventoryservice.dto.StockTransferDto;
-import com.thai.pham.inventoryservice.service.ProductService;
-
-import java.util.List;
 import java.util.UUID;
+
+import com.thai.pham.inventoryservice.service.StockTransferService;
+import com.thai.pham.inventoryservice.dto.StockTransferDto;
+import com.thai.pham.inventoryservice.dto.PageDto;
 
 @RestController
 @RequestMapping("api/v1/transfer/")
 class StockTransferController {
-    private StockTransferService transferService;
+    private final StockTransferService transferService;
 
     @Autowired
     public StockTransferController(StockTransferService transferService) {

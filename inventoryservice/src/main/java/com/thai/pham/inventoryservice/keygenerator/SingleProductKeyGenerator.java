@@ -1,5 +1,6 @@
 package com.thai.pham.inventoryservice.keygenerator;
 
+import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.stereotype.Component;
 
@@ -29,12 +30,12 @@ public class SingleProductKeyGenerator implements KeyGenerator {
             }
             
             if(param instanceof UUID) {
-                keyBuilder.append(CUSTOM_KEY_GENERATOR).append(param.toString());
+                keyBuilder.append(CUSTOM_KEY_GENERATOR).append(param);
                 break;
             }
 
             if(param instanceof Product) {
-                keyBuilder.append(CUSTOM_KEY_GENERATOR).append(param.getId().toString());
+                keyBuilder.append(CUSTOM_KEY_GENERATOR).append(((Product) param).getId().toString());
                 break;
             }
         }

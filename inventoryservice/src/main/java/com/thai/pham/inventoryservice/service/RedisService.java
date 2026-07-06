@@ -1,24 +1,37 @@
 package com.thai.pham.inventoryservice.service;
 
-class RedisService {
-    private RedisTemplate<String, UUID> uuidRedisTemplate;
-    private RedisTemplate<String, Product> productRedisTemplate;
-    private ObjectMapper mapper = new ObjectMapper();
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thai.pham.inventoryservice.entity.Product;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ListOperations;
 
-    @Autowired
-    public RedisService(@Qualifier("uuidRedisTemplate") RedisTemplate<String, UUID> uuidRedisTemplate) {
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+class RedisService {
+    private final RedisTemplate<String, UUID> uuidRedisTemplate;
+    private final RedisTemplate<String, Product> productRedisTemplate;
+    private final ObjectMapper mapper = new ObjectMapper();
+
+    public RedisService(
+            @Qualifier("uuidRedisTemplate") RedisTemplate<String, UUID> uuidRedisTemplate,
+            @Qualifier("productRedisTemplate") RedisTemplate<String, Product> productRedisTemplate
+    ) {
         this.uuidRedisTemplate = uuidRedisTemplate;
+        this.productRedisTemplate = productRedisTemplate;
     }
 
     public void saveItemIds(String key, List<UUID> itemIds) {
-        ListOperation<String, UUID> listOps = uuidRedisTemplate.opsForList();
+        ListOperations<String, UUID> listOps = uuidRedisTemplate.opsForList();
         Long listSize = listOps.size(key);
-        listOps.rightPop(listSize);
+        listOps.rightPop(key, listSize);
         listOps.rightPushAll(key, itemIds);   
     }
 
     public List<UUID> getItemsIds(String key) {
-        ListOperation<String, UUID> listOps = uuidRedisTemplate.opsForList();
+        ListOperations<String, UUID> listOps = uuidRedisTemplate.opsForList();
         Long listSize = listOps.size(key);
         return listOps.range(key, 0, listSize - 1);
     }

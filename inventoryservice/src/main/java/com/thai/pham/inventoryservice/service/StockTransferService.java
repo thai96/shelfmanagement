@@ -1,11 +1,19 @@
 package com.thai.pham.inventoryservice.service;
 
+import com.thai.pham.inventoryservice.dto.PageDto;
+import com.thai.pham.inventoryservice.dto.StockTransferDto;
 import com.thai.pham.inventoryservice.entity.StockTransfer;
+import com.thai.pham.inventoryservice.mapper.PageDtoMapper;
+import com.thai.pham.inventoryservice.mapper.StockTransferDtoMapper;
 import com.thai.pham.inventoryservice.repository.StockTransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -40,13 +48,13 @@ public class StockTransferService {
     @Transactional(readOnly = false)
     public StockTransferDto updateTransferInformation(StockTransferDto dto) {
         StockTransfer transferEntity = transferMapper.mapEntity(dto);
-        return stockTransferRepo.saveAndFlush(transferEntity);
+        return transferMapper.mapObject(stockTransferRepo.saveAndFlush(transferEntity));
     }
 
     @Transactional(readOnly = false)
     public StockTransferDto  addTransfer(StockTransferDto insertInformation) {
-        StockTransfer transferEntity = transferMapper.mapEntity(dto);
+        StockTransfer transferEntity = transferMapper.mapEntity(insertInformation);
         transferEntity.setId(null);
-        return stockTransferRepo.saveAndFlush(transferEntity);
+        return transferMapper.mapObject(stockTransferRepo.saveAndFlush(transferEntity));
     }
 }

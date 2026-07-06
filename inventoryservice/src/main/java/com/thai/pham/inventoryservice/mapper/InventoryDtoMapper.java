@@ -1,5 +1,6 @@
 package com.thai.pham.inventoryservice.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.thai.pham.inventoryservice.entity.Product;
@@ -11,8 +12,8 @@ import com.thai.pham.inventoryservice.dto.LocationDto;
 
 @Component
 public class InventoryDtoMapper {
-    private ProductDtoMapper productMapper;
-    private LocationDtoMapper locationMapper;
+    private final ProductDtoMapper productMapper;
+    private final LocationDtoMapper locationMapper;
 
     @Autowired
     public InventoryDtoMapper(ProductDtoMapper productMapper, LocationDtoMapper locationMapper) {

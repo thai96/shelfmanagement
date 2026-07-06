@@ -1,5 +1,6 @@
 package com.thai.pham.inventoryservice.configs;
 
+import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -9,11 +10,13 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.UUID;
 
 @Configuration
 @ConfigurationProperties(prefix = "spring.redis")
@@ -49,8 +52,15 @@ public class RedisCacheConfig {
     }
 
     @Bean("uuidRedisTemplate")
-    public RedisTemplate<String, UUID> redisTemplate(RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, String> template = new RedisTemplate<>();
+    public RedisTemplate<String, UUID> uuidRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, UUID> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        return template;
+    }
+
+    @Bean("productRedisTemplate")
+    public RedisTemplate<String, Product> productRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Product> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         return template;
     }

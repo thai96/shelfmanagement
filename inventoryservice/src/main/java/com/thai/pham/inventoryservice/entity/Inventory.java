@@ -49,4 +49,13 @@ public class Inventory {
 
     @Version
     private Integer version;
+
+    public Inventory(UUID id, Integer qtyOnHand, Integer qtyReserved, Integer qtyAvailable, Location location, Product product) {
+        this.id = id;
+        this.qtyOnHand = qtyOnHand;
+        this.qtyReserved = qtyReserved;
+        this.qtyAvailable = qtyAvailable;
+        this.location = location;
+        this.product = product;
+    }
 }

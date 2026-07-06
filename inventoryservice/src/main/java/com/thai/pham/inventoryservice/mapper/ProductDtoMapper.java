@@ -1,5 +1,6 @@
 package com.thai.pham.inventoryservice.mapper;
 
+import com.thai.pham.inventoryservice.entity.ProductAttributes;
 import org.springframework.stereotype.Component;
 
 import com.thai.pham.inventoryservice.entity.Product;

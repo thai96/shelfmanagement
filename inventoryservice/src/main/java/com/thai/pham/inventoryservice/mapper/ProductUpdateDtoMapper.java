@@ -12,7 +12,7 @@ import java.util.List;
 
 @Component
 public class ProductUpdateDtoMapper {
-    private InventoryUpdateDtoMapper inventoryMapper;
+    private final InventoryUpdateDtoMapper inventoryMapper;
 
     @Autowired
     public ProductUpdateDtoMapper(InventoryUpdateDtoMapper inventoryMapper) {
@@ -34,9 +34,7 @@ public class ProductUpdateDtoMapper {
             inventories
         );
 
-        inventories.stream().forEach(inv -> {
-            inv.setProduct(mappedProduct);
-        });
+        inventories.forEach(inv -> inv.setProduct(mappedProduct));
         return mappedProduct;
     }
 

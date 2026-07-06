@@ -1,8 +1,22 @@
 package com.thai.pham.inventoryservice.mapper;
 
+import com.thai.pham.inventoryservice.dto.LocationDto;
+import com.thai.pham.inventoryservice.dto.StockTransferDto;
+import com.thai.pham.inventoryservice.entity.Location;
+import com.thai.pham.inventoryservice.entity.StockTransfer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+
 @Component
 public class StockTransferDtoMapper {
     private final LocationDtoMapper locationMapper;
+
+    @Autowired
+    public StockTransferDtoMapper(LocationDtoMapper locationMapper) {
+        this.locationMapper = locationMapper;
+    }
 
     public StockTransferDto mapObject(StockTransfer stockTransferEntity) {
         LocationDto from = locationMapper.mapObject(stockTransferEntity.getFromLocation());
@@ -21,8 +35,8 @@ public class StockTransferDtoMapper {
         Location toEntity = locationMapper.mapEntity(stockTransferDto.getTo());
 
         StockTransfer transfer = new StockTransfer(
-            stockTransferDto.getId(),
-            stockTransferDto.getStatus(),
+            stockTransferDto.getTransferId(),
+            stockTransferDto.getStatus()
         );
         Optional.ofNullable(fromEntity).ifPresent(transfer::setFromLocation);
         Optional.ofNullable(toEntity).ifPresent(transfer::setToLocation);

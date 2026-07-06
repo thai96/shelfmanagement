@@ -14,7 +14,6 @@ import com.thai.pham.inventoryservice.dto.PageDto;
 import com.thai.pham.inventoryservice.entity.Product;
 import com.thai.pham.inventoryservice.service.ProductService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -35,7 +34,7 @@ public class ProductManageController {
     @GetMapping
     public ResponseEntity<PageDto<Product>> getProductFromName(@RequestParam(value = "name", required = false, defaultValue = "") String searchTerm, Pageable pageable) {
         Page<Product> products = productService.findAllProductByName(searchTerm, pageable);
-        PageDto<Product> productPageDtos = mapper.toPageDto(products);
+        PageDto<Product> productPageDtos = mapper.mapObject(products);
         return new ResponseEntity<>(productPageDtos, HttpStatus.OK);
     }
 

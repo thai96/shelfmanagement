@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PageDtoMapper {
-    public <T> PageDto<T> toPageDto(Page<T> page) {
-        return new PageDto<T> (
-            page.getContent(),
-            page.getNumber(),
-            page.getSize(),
-            page.getTotalElements(),
-            (long) page.getTotalPages(),
-            page.isLast(),
-            page.isFirst()
+    public <T> PageDto<T> mapObject(Page<T> page) {
+        return new PageDto<>(
+                page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                (long) page.getTotalPages(),
+                page.isLast(),
+                page.isFirst()
         );
     }
 }

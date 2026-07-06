@@ -1,5 +1,7 @@
 package com.thai.pham.inventoryservice.controller;
 
+import com.thai.pham.inventoryservice.dto.InventoryChangeDto;
+import com.thai.pham.inventoryservice.service.InventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,7 +25,7 @@ public class InventoryController {
     }
 
     @PostMapping("update")
-    public ResponseEntity<List<InventoryDto>> updateInventory(@RequestBody List<InventoryChangeDto> dataChangeList, @RequestParam("requestId" String requestId)) {
+    public ResponseEntity<List<InventoryDto>> updateInventory(@RequestBody List<InventoryChangeDto> dataChangeList, @RequestParam("requestId") String requestId) {
         List<InventoryDto> changedData = inventoryService.updateInventory(dataChangeList, requestId);
         return new ResponseEntity<>(changedData, HttpStatus.OK);
     }

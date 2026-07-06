@@ -4,11 +4,13 @@ import com.thai.pham.inventoryservice.dto.ProductInventoryDetailDto;
 import com.thai.pham.inventoryservice.dto.ProductUpdateDto;
 import com.thai.pham.inventoryservice.entity.Product;
 import com.thai.pham.inventoryservice.entity.ProductAttributes;
+import com.thai.pham.inventoryservice.keygenerator.ProductKeyGenerator;
 import com.thai.pham.inventoryservice.mapper.ProductUpdateDtoMapper;
 import com.thai.pham.inventoryservice.repository.ProductRepository;
 import com.thai.pham.inventoryservice.mapper.ProductInventoryDetailMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
-//**
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+/**
 * cách cache: 2-tier caching cho page
 * cache product theo từng item và update
 * on delete: check phương pháp mutex lock , soft-delete hoặc stale while revalidate, cursor-based pagination
@@ -34,7 +40,13 @@ public class ProductService {
     private static final Integer DEFAULT_PAGE_SIZE = 20;
 
     @Autowired
-    public ProductService(ProductRepository productRepo, ProductInventoryDetailMapper productInventoryDetailMapper, ProductUpdateDtoMapper productUpdateDtoMapper, RedisService redisService, ProductKeyGenerator productKeyGenerator) {
+    public ProductService(
+            ProductRepository productRepo,
+            ProductInventoryDetailMapper productInventoryDetailMapper,
+            ProductUpdateDtoMapper productUpdateDtoMapper,
+            RedisService redisService,
+            ProductKeyGenerator productKeyGenerator
+    ) {
         this.productRepo = productRepo;
         this.productInventoryDetailMapper = productInventoryDetailMapper;
         this.productUpdateDtoMapper = productUpdateDtoMapper;
@@ -47,25 +59,12 @@ public class ProductService {
         List<UUID> idList = productPage.getContent().stream().map(Product::getId).toList();
         redisService.saveItemIds(pageKey, idList);
         Map<String, Product> productKeyMap = productPage.getContent().parallelStream().collect(Collectors.toMap(
-            redisService::generateSingleProductKey,
+            productKeyGenerator::generateSingleProductKey,
             Function.identity()
         ));
         redisService.saveProducts(productKeyMap);
     }
 
-    public List<Product> getAllProduct(Pageable pageable) {
-        Page<Product> productPage = productRepo.findAll(pageable);
-        cacheProductPage("", productPage, pageable);
-        return productPage;
-    }
-
-    public Page<Product> getAllVariationOfProduct(String productName, Pageable pageable) {
-        Page<Product> productPage = productRepo.findProductByProductNameContaining(productName, pageable);
-        cacheProductPage("", productPage, pageable);
-        return productPage;
-    }
-
-//    @Cacheable(keyGenerator="productPageKeyGenerator")
     public Page<Product> findAllProductByName(String searchTerm, Pageable pageable) {
         Page<Product> productPage = isStringEmpty(searchTerm) ? productRepo.findAll(pageable) :
             productRepo.findProductByProductNameContaining(searchTerm, pageable);
@@ -96,7 +95,7 @@ public class ProductService {
     }
 
     @Transactional(readOnly = false)
-    @CacheEvict(name = "product", keyGenerator = "productKeyGenerator")
+    @CacheEvict(cacheNames = "product", keyGenerator = "productKeyGenerator")
     public Boolean deleteProductById(UUID productId) {
         Product product = productRepo.findProductById(productId);
         if(product == null) {

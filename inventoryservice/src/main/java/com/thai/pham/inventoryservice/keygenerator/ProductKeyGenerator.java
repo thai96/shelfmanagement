@@ -1,7 +1,16 @@
 package com.thai.pham.inventoryservice.keygenerator;
 
+import com.thai.pham.inventoryservice.entity.Product;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Component
-class ProductKeyGenerator {
+public class ProductKeyGenerator {
     private static final String CUSTOM_KEY_DIVIDER = ":";
     private static final String SORT_KEY_DIVIDER = ";";
     private static final String INVENTORY_SERVICE_CACHE_PREFIX = "inventoryservice";
@@ -23,7 +32,7 @@ class ProductKeyGenerator {
             keyBuilder.append(CUSTOM_KEY_DIVIDER).append(PAGE_SEARCH_SERVICE_CACHE_PREFIX)
             .append(CUSTOM_KEY_DIVIDER).append(searchTerm);
         }
-        String sortKey = Optional.ofNullable(pageInfo.getSort()).map(sort -> 
+        String sortKey = Optional.of(pageInfo.getSort()).map(sort ->
             sort.stream().sorted(Comparator.comparing(Sort.Order::getProperty))
             .map(order -> order.getProperty() + "-" + order.getDirection())
             .collect(Collectors.joining(SORT_KEY_DIVIDER))
