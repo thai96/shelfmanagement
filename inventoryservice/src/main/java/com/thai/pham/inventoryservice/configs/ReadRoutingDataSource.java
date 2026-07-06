@@ -7,7 +7,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ReadRoutingDataSource extends AbstractRoutingDataSource {
     private final AtomicInteger counter = new AtomicInteger(0);
-    private final int slaveCount = 5;
+    private final Integer slaveCount;
+
+    public ReadRoutingDataSource(
+            int slaveCount
+    ) {
+        this.slaveCount = slaveCount;
+    }
 
     @Override
     protected Object determineCurrentLookupKey() {

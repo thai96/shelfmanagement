@@ -30,6 +30,7 @@ public class DataSourceConfig {
     private final String driverClassName;
     private final Integer maximumConnections; // Maximum NUMBER OF connection in the pool at the same time
     private final Integer leakThresholdInMillis; // Log possible leak connection
+    private final Integer slaveCount;
 
     @Autowired
     public DataSourceConfig(
@@ -41,7 +42,8 @@ public class DataSourceConfig {
         @Value("${spring.datasource.slave.password}") String passwordSlave,
         @Value("${spring.datasource.driver-class-name}") String driverClassName,
         @Value("${spring.datasource.hikari.maximum-pool-size}") Integer maximumConnections,
-        @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer leakThresholdInMillis
+        @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer leakThresholdInMillis,
+        @Value("${database.replication.count}") Integer slaveCount
     ) {
         this.masterUrl = masterUrl;
         this.slave1Url = slave1Url;
@@ -56,16 +58,7 @@ public class DataSourceConfig {
         this.driverClassName = driverClassName;
         this.maximumConnections = maximumConnections;
         this.leakThresholdInMillis = leakThresholdInMillis;
-        log.info("_______Configuration log_______");
-        log.info("master url {}", masterUrl);
-        log.info("slave url {}", slave1Url);
-        log.info("userName {}", userName);
-        log.info("password {}", password);
-        log.info("userNameSlave {}", userNameSlave);
-        log.info("passwordSlave {}", passwordSlave);
-        log.info("driverClassName {}", driverClassName);
-        log.info("maximumConnections {}", maximumConnections);
-        log.info("leakThresholdInMillis {}", leakThresholdInMillis);
+        this.slaveCount = slaveCount;
     }
 
     @Bean
@@ -90,7 +83,7 @@ public class DataSourceConfig {
 //        targetDataSources.put("slave4", createDataSource(slave4Url));
 //        targetDataSources.put("slave5", createDataSource(slave5Url));
 
-        ReadRoutingDataSource routingDataSource = new ReadRoutingDataSource();
+        ReadRoutingDataSource routingDataSource = new ReadRoutingDataSource(slaveCount);
         routingDataSource.setDefaultTargetDataSource(master);
         routingDataSource.setTargetDataSources(targetDataSources);
         routingDataSource.afterPropertiesSet();
