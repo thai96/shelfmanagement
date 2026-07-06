@@ -7,7 +7,9 @@ import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ProductInventoryDetailMapper {
@@ -20,12 +22,11 @@ public class ProductInventoryDetailMapper {
 
 
     public ProductInventoryDetailDto mapObject(Product product) {
-        Integer productAvailable = product.getInventory().stream()
-            .mapToInt(this::findAvailableQuantity).sum();
-        Boolean isProductAvailable = productAvailable > 0;
-        List<LocationDto> locationDtos = product.getInventory().stream()
-            .map(inventory -> locationMapper.mapObject(inventory.getLocation()))
-            .toList();
+        Boolean isProductAvailable = Optional.ofNullable(product.getInventory()).map(item -> item.stream()
+                .mapToInt(this::findAvailableQuantity).sum() > 0).orElse(null);
+        List<LocationDto> locationDtos = Optional.ofNullable(product.getInventory()).map(item -> item.stream()
+                .map(inventory -> locationMapper.mapObject(inventory.getLocation()))
+                .toList()).orElse(new ArrayList<>());
 
         return new ProductInventoryDetailDto(
             product.getId(),

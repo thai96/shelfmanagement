@@ -33,7 +33,7 @@ public class ProductManageController {
     }
 
     @GetMapping
-    public ResponseEntity<PageDto<Product>> getProductFromName(@RequestParam("name") String searchTerm, Pageable pageable) {
+    public ResponseEntity<PageDto<Product>> getProductFromName(@RequestParam(value = "name", required = false, defaultValue = "") String searchTerm, Pageable pageable) {
         Page<Product> products = productService.findAllProductByName(searchTerm, pageable);
         PageDto<Product> productPageDtos = mapper.toPageDto(products);
         return new ResponseEntity<>(productPageDtos, HttpStatus.OK);
