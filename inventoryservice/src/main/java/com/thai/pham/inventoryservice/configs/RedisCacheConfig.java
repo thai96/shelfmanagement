@@ -4,6 +4,7 @@ import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -20,6 +21,7 @@ import java.util.UUID;
 
 @Configuration
 @ConfigurationProperties(prefix = "spring.redis")
+@EnableCaching
 public class RedisCacheConfig {
     private final String host;
     private final Integer port;

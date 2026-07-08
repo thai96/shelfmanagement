@@ -5,12 +5,14 @@ import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ListOperations;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-class RedisService {
+@Service
+public class RedisService {
     private final RedisTemplate<String, UUID> uuidRedisTemplate;
     private final RedisTemplate<String, Product> productRedisTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
