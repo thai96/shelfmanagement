@@ -15,9 +15,7 @@ import org.springframework.boot.jpa.test.autoconfigure.TestEntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 @DataJpaTest
@@ -91,5 +89,20 @@ public class ProductRepositoryTest {
         );
     }
 
-    
+    @ParameterizedTest
+    @MethodSource("createFindProductInput")
+    public void testFindProductById(Product expectedProduct) {
+        UUID inputId = Optional.ofNullable(expectedProduct).map(Product::getId).orElse(null);
+        Product foundProduct = productRepo.findProductById(inputId);
+
+        Assertions.assertSame(expectedProduct, foundProduct);
+    }
+
+    public static Stream<Product> createFindProductInput() {
+        return Stream.of(
+                products.get(1),
+                products.get(3),
+                null
+        );
+    }
 }
