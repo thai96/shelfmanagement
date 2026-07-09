@@ -66,4 +66,11 @@ public class RedisCacheConfig {
         template.setConnectionFactory(connectionFactory);
         return template;
     }
+
+    @Bean("inventoryRedisTemplate")
+    public RedisTemplate<String, InventoryDto> productRedisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, InventoryDto> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+        return template;
+    }
 }

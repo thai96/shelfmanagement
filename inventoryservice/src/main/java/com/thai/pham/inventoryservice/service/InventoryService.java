@@ -25,18 +25,25 @@ public class InventoryService {
     private final InventoryRepository inventoryRepo;
     private final PageDtoMapper pageMapper;
     private final InventoryDtoMapper inventoryMapper;
+    private final RedisService redisService;
+    private final InventoryKeyGenerator inventoryKeyGenerator;
 
     @Autowired
-    public InventoryService(InventoryRepository inventoryRepo,PageDtoMapper pageMapper,
-        InventoryDtoMapper inventoryMapper) {
+    public InventoryService(InventoryRepository inventoryRepo, PageDtoMapper pageMapper,
+        InventoryDtoMapper inventoryMapper, RedisService redisService, InventoryKeyGenerator inventoryKeyGenerator) {
         this.inventoryRepo = inventoryRepo;
         this.pageMapper = pageMapper;
-        this.inventoryMapper = inventoryMapper;
+        this.inventoryMapper = inventoryMapper; 
+        this.redisService = redisService;
+        this.inventoryKeyGenerator = inventoryKeyGenerator;
     }
 
 
     public PageDto<InventoryDto> getAllInventory(Pageable pageable) {
         Page<InventoryDto> inventoriesDto = inventoryRepo.findAll(pageable).map(inventoryMapper::mapObject);
+        String pageKey = inventoryKeyGenerator.generatePageKey(pageable);
+        List<UUID> listUUIDs = inventoriesDto.stream().peek(dto -> redisService.saveInventory(dto)).map(InventoryDto::getId).toList();
+        redisService.saveItemIds(pageKey, listUUIDs);
         return pageMapper.mapObject(inventoriesDto);
     }
 
@@ -50,7 +57,8 @@ public class InventoryService {
                                                 .map(changeData -> processInventoryChange(inventory, changeData.getChangeType(), changeData.getChangeQty())).orElse(inventory)
                                             ).toList();
         List<Inventory> updatingInventory = new LinkedList<>(changeInventory);
-        return inventoryRepo.saveAll(updatingInventory).stream().map(inventoryMapper::mapObject).toList();
+        return inventoryRepo.saveAll(updatingInventory).stream().map(inventoryMapper::mapObject)
+            .peek(dto -> redisService.saveInventory(dto)).toList();
     }
 
     private Inventory processInventoryChange(Inventory inventory, InventoryChangeType changeType, int changeQty) {

@@ -15,14 +15,17 @@ import java.util.UUID;
 public class RedisService {
     private final RedisTemplate<String, UUID> uuidRedisTemplate;
     private final RedisTemplate<String, Product> productRedisTemplate;
+    private final RedisTemplate<String, InventoryDto> inventoryRedisTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
 
     public RedisService(
             @Qualifier("uuidRedisTemplate") RedisTemplate<String, UUID> uuidRedisTemplate,
-            @Qualifier("productRedisTemplate") RedisTemplate<String, Product> productRedisTemplate
+            @Qualifier("productRedisTemplate") RedisTemplate<String, Product> productRedisTemplate,
+            @Qualifier("inventoryRedisTemplate") RedisTemplate<String, InventoryDto> inventoryRedisTemplate
     ) {
         this.uuidRedisTemplate = uuidRedisTemplate;
         this.productRedisTemplate = productRedisTemplate;
+        this.inventoryRedisTemplate = inventoryRedisTemplate;
     }
 
     public void saveItemIds(String key, List<UUID> itemIds) {
@@ -44,5 +47,9 @@ public class RedisService {
 
     public void saveProducts(Map<String, Product> cacheValue) {
         productRedisTemplate.opsForValue().multiSet(cacheValue);
+    }
+
+    public void saveInventoryDto(String key, InventoryDto inventoryDto, long ttl) {
+        inventoryRedisTemplate.boundValueOps(key).set(inventoryDto, Duration.ofMillis(ttl));
     }
 }
