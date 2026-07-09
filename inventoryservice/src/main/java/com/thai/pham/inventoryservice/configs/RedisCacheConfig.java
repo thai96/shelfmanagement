@@ -1,5 +1,6 @@
 package com.thai.pham.inventoryservice.configs;
 
+import com.thai.pham.inventoryservice.dto.InventoryDto;
 import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -68,7 +69,7 @@ public class RedisCacheConfig {
     }
 
     @Bean("inventoryRedisTemplate")
-    public RedisTemplate<String, InventoryDto> productRedisTemplate(RedisConnectionFactory connectionFactory) {
+    public RedisTemplate<String, InventoryDto> inventoryDtoRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, InventoryDto> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         return template;

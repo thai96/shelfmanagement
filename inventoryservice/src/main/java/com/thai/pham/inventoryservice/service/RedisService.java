@@ -1,12 +1,14 @@
 package com.thai.pham.inventoryservice.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.thai.pham.inventoryservice.dto.InventoryDto;
 import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;

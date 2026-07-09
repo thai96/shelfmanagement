@@ -1,5 +1,6 @@
 package com.thai.pham.inventoryservice.service;
 
+import com.thai.pham.inventoryservice.keygenerator.InventoryKeyGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class InventoryService {
+    private static final Long SINGLE_ITEM_TTL_MILLIS = 10000L;
+
     private final InventoryRepository inventoryRepo;
     private final PageDtoMapper pageMapper;
     private final InventoryDtoMapper inventoryMapper;
@@ -38,11 +41,15 @@ public class InventoryService {
         this.inventoryKeyGenerator = inventoryKeyGenerator;
     }
 
+    private void saveSingleInventoryDtoCache(InventoryDto inventoryDto) {
+        String key = inventoryKeyGenerator.generateSingleInventoryKey(inventoryDto);
+        redisService.saveInventoryDto(key, inventoryDto, SINGLE_ITEM_TTL_MILLIS);
+    }
 
     public PageDto<InventoryDto> getAllInventory(Pageable pageable) {
         Page<InventoryDto> inventoriesDto = inventoryRepo.findAll(pageable).map(inventoryMapper::mapObject);
         String pageKey = inventoryKeyGenerator.generatePageKey(pageable);
-        List<UUID> listUUIDs = inventoriesDto.stream().peek(dto -> redisService.saveInventory(dto)).map(InventoryDto::getId).toList();
+        List<UUID> listUUIDs = inventoriesDto.stream().peek(this::saveSingleInventoryDtoCache).map(InventoryDto::getId).toList();
         redisService.saveItemIds(pageKey, listUUIDs);
         return pageMapper.mapObject(inventoriesDto);
     }
@@ -58,7 +65,7 @@ public class InventoryService {
                                             ).toList();
         List<Inventory> updatingInventory = new LinkedList<>(changeInventory);
         return inventoryRepo.saveAll(updatingInventory).stream().map(inventoryMapper::mapObject)
-            .peek(dto -> redisService.saveInventory(dto)).toList();
+            .peek(this::saveSingleInventoryDtoCache).toList();
     }
 
     private Inventory processInventoryChange(Inventory inventory, InventoryChangeType changeType, int changeQty) {
