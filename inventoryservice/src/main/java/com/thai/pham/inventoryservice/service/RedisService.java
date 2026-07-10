@@ -37,6 +37,14 @@ public class RedisService {
         listOps.rightPushAll(key, itemIds);   
     }
 
+    public Product obtainsSingleProduct(String key) {
+        return productRedisTemplate.boundValueOps(key).get();
+    }
+
+    public void saveSingleProduct(String key, Product product, long ttl) {
+        productRedisTemplate.boundValueOps(key).set(product, Duration.ofMillis(ttl));
+    }
+
     public List<UUID> getItemsIds(String key) {
         ListOperations<String, UUID> listOps = uuidRedisTemplate.opsForList();
         Long listSize = listOps.size(key);

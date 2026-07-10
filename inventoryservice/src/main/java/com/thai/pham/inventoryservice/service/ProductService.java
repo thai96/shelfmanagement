@@ -39,6 +39,8 @@ public class ProductService {
 
     private static final Integer DEFAULT_PAGE_SIZE = 20;
 
+    private static final Long CACHED_PRODUCT_TTL = 10000L;
+
     @Autowired
     public ProductService(
             ProductRepository productRepo,
@@ -78,7 +80,17 @@ public class ProductService {
 
     @Cacheable(keyGenerator="productKeyGenerator")
     public ProductInventoryDetailDto findProductById(UUID productId) {
+        String cacheKey = productKeyGenerator.generateProductKeyById(productId);
+        if(cacheKey == null || cacheKey.isBlank()) {
+            return null;
+        }
+
+        Product cachedData = redisService.obtainsSingleProduct(cacheKey);
+        if(cachedData != null) {
+            return productInventoryDetailMapper.mapObject(cachedData);
+        }
         Product product = productRepo.findProductById(productId);
+        redisService.saveSingleProduct(cacheKey, product, CACHED_PRODUCT_TTL);
         return product != null ? productInventoryDetailMapper.mapObject(product) : null;
     }
 

@@ -47,9 +47,16 @@ public class ProductKeyGenerator {
         if(product == null) {
             return null;
         }
+        return generateProductKeyById(product.getId());
+    }
+
+    public String generateProductKeyById(UUID id) {
+        if(id == null) {
+            return null;
+        }
         return INVENTORY_SERVICE_CACHE_PREFIX + CUSTOM_KEY_DIVIDER + 
                 PRODUCT_SERVICE_CACHE_PREFIX + CUSTOM_KEY_DIVIDER + 
                 PRODUCT_SINGLE_CACHE_PERFIX + CUSTOM_KEY_DIVIDER +
-                product.getId();
+                id;
     }
 }
