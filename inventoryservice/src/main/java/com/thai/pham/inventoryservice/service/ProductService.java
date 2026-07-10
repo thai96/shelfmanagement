@@ -78,7 +78,6 @@ public class ProductService {
         return content == null || content.isBlank();
     }
 
-    @Cacheable(keyGenerator="productKeyGenerator")
     public ProductInventoryDetailDto findProductById(UUID productId) {
         String cacheKey = productKeyGenerator.generateProductKeyById(productId);
         if(cacheKey == null || cacheKey.isBlank()) {
@@ -107,20 +106,23 @@ public class ProductService {
     }
 
     @Transactional(readOnly = false)
-    @CacheEvict(cacheNames = "product", keyGenerator = "productKeyGenerator")
     public Boolean deleteProductById(UUID productId) {
         Product product = productRepo.findProductById(productId);
         if(product == null) {
             return true;
         }
         productRepo.deleteById(productId);
+        redisService.deleteProduct(productKeyGenerator.generateSingleProductKey(product));
+        redisService.deleteItemsIds(productKeyGenerator.getPagePattern());
         return productRepo.existsById(productId);
     }
 
     @Transactional(readOnly = false)
     public ProductUpdateDto updateOrInsertProduct(ProductUpdateDto productUpdateDto) {
         Product product = productUpdateDtoMapper.mapEntity(productUpdateDto);
-        return productUpdateDtoMapper.mapObject(productRepo.saveAndFlush(product));
+        Product newProduct = productRepo.saveAndFlush(product);
+        redisService.saveSingleProduct(productKeyGenerator.generateSingleProductKey(newProduct), newProduct, CACHED_PRODUCT_TTL);
+        return productUpdateDtoMapper.mapObject(newProduct);
     }
 
 }

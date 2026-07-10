@@ -18,7 +18,7 @@ public class LoggingInterceptor extends AbstractMonitoringInterceptor {
         } finally {
             long end = System.currentTimeMillis();
             long time = end - start;
-            log.info("Method " + name + " execution last:" + time "ms");
+            log.info("Method " + name + " execution last:" + time + "ms");
             if(time > 10) {
                 log.warn("Method execution longer than 10 ms!");
             }

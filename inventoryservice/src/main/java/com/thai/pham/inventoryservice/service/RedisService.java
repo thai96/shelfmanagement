@@ -4,14 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thai.pham.inventoryservice.dto.InventoryDto;
 import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.connection.DataType;
+import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class RedisService {
@@ -19,6 +20,8 @@ public class RedisService {
     private final RedisTemplate<String, Product> productRedisTemplate;
     private final RedisTemplate<String, InventoryDto> inventoryRedisTemplate;
     private final ObjectMapper mapper = new ObjectMapper();
+
+    private static final int MAXIMUM_SIZE_FOR_BATCH_DELETE = 1000;
 
     public RedisService(
             @Qualifier("uuidRedisTemplate") RedisTemplate<String, UUID> uuidRedisTemplate,
@@ -43,6 +46,31 @@ public class RedisService {
 
     public void saveSingleProduct(String key, Product product, long ttl) {
         productRedisTemplate.boundValueOps(key).set(product, Duration.ofMillis(ttl));
+    }
+
+    public void deleteProduct(String key) {
+        productRedisTemplate.delete(key);
+    }
+
+    public void removeCachePageWithRegex(String regex, DataType selectedType) {
+        List<String> deleteKey = new ArrayList<>();
+        ScanOptions options = ScanOptions.scanOptions().match(regex).
+                type(Optional.ofNullable(selectedType).orElse(DataType.NONE)).build();
+        try (Cursor<byte[]> cursor = uuidRedisTemplate.execute(connection -> connection.keyCommands().scan(options), true)) {
+            while (cursor.hasNext()) {
+                deleteKey.add(new String(cursor.next()));
+                if (deleteKey.size() >= MAXIMUM_SIZE_FOR_BATCH_DELETE) {
+                    uuidRedisTemplate.unlink(deleteKey);
+                    deleteKey.clear();
+                }
+            }
+        } catch (Exception ex) {
+
+        }
+
+        if (!deleteKey.isEmpty()) {
+            uuidRedisTemplate.unlink(deleteKey);
+        }
     }
 
     public List<UUID> getItemsIds(String key) {

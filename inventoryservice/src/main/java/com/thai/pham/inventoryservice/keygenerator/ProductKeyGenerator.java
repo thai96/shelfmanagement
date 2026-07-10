@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -59,4 +60,13 @@ public class ProductKeyGenerator {
                 PRODUCT_SINGLE_CACHE_PERFIX + CUSTOM_KEY_DIVIDER +
                 id;
     }
+
+    public String getPagePattern() {
+        String patternBuilder = INVENTORY_SERVICE_CACHE_PREFIX + CUSTOM_KEY_DIVIDER + PRODUCT_SERVICE_CACHE_PREFIX + CUSTOM_KEY_DIVIDER + PAGE_INDEX_SERVICE_CACHE_PREFIX + CUSTOM_KEY_DIVIDER + "[0-9]" +
+                PAGE_SIZE_SERVICE_CACHE_PREFIX + CUSTOM_KEY_DIVIDER + "[0-9]" +
+                '?' + '(' + CUSTOM_KEY_DIVIDER + PAGE_SEARCH_SERVICE_CACHE_PREFIX +
+                CUSTOM_KEY_DIVIDER + "*" + ')' + '*';
+        return patternBuilder;
+    }
+
 }
