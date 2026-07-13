@@ -21,15 +21,15 @@ public class Inventory {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "qty_on_hand", nullable = false)
+    @Column(name = "qty_on_hand", columnDefinition = "INTEGER NON NULL CHECK(qty_on_hand >= 0)")
     @ColumnDefault("0")
     private Integer qtyOnHand;
 
-    @Column(name = "qty_reserved", nullable = false)
+    @Column(name = "qty_reserved", columnDefinition = "INTEGER NON NULL CHECK(qty_reserved >= 0)")
     @ColumnDefault("0")
     private Integer qtyReserved;
 
-    @Column(name = "qty_available", nullable = false)
+    @Column(name = "qty_available", columnDefinition = "INTEGER NON NULL CHECK(qty_reserved >= 0)")
     @ColumnDefault("0")
     private Integer qtyAvailable;
 
