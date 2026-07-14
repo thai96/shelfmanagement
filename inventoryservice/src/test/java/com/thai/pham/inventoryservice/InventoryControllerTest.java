@@ -2,6 +2,7 @@ package com.thai.pham.inventoryservice;
 
 import com.thai.pham.inventoryservice.configs.DataSourceConfig;
 import com.thai.pham.inventoryservice.configs.RedisCacheConfig;
+import com.thai.pham.inventoryservice.configs.TestDataWebConfig;
 import com.thai.pham.inventoryservice.dto.InventoryDto;
 import com.thai.pham.inventoryservice.dto.PageDto;
 import com.thai.pham.inventoryservice.entity.*;
@@ -16,13 +17,16 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.autoconfigure.web.DataWebAutoConfiguration;
 import org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
 import org.springframework.boot.jdbc.autoconfigure.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.config.EnableSpringDataWebSupport;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -45,6 +49,7 @@ import java.util.stream.Stream;
 @WebMvcTest(
         controllers = InventoryController.class,
         excludeAutoConfiguration = {
+                DataWebAutoConfiguration.class,
                 DataSourceAutoConfiguration.class,
                 HibernateJpaAutoConfiguration.class,
                 DataSourceTransactionManagerAutoConfiguration.class
@@ -59,7 +64,7 @@ import java.util.stream.Stream;
                 )
         }
 )
-public class InventoryControllerTest {
+@Import(TestDataWebConfig.class) public class InventoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
