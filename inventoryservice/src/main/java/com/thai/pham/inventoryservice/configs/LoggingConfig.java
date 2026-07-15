@@ -1,8 +1,8 @@
 package com.thai.pham.inventoryservice.configs;
 
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.aop.Pointcut;
 import org.springframework.aop.Advisor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Bean;
@@ -20,7 +20,7 @@ class LoggingConfig {
 
     @Bean
     public LoggingInterceptor createMethodExecutionTimeMeasurer() {
-        return LoggingInterceptor();
+        return new LoggingInterceptor();
     }
 
     @Bean

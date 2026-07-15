@@ -17,10 +17,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.data.autoconfigure.web.DataWebAutoConfiguration;
-import org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration;
-import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
-import org.springframework.boot.jdbc.autoconfigure.DataSourceTransactionManagerAutoConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
@@ -45,15 +41,15 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith({SpringExtension.class})
 @WebMvcTest(
         controllers = InventoryController.class,
-        excludeAutoConfiguration = {
-                DataWebAutoConfiguration.class,
-                DataSourceAutoConfiguration.class,
-                HibernateJpaAutoConfiguration.class,
-                DataSourceTransactionManagerAutoConfiguration.class
-        },
+//        excludeAutoConfiguration = {
+//                DataWebAutoConfiguration.class,
+//                DataSourceAutoConfiguration.class,
+//                HibernateJpaAutoConfiguration.class,
+//                DataSourceTransactionManagerAutoConfiguration.class
+//        },
         excludeFilters = {
                 @ComponentScan.Filter(
                         type = FilterType.ASSIGNABLE_TYPE,
@@ -64,7 +60,9 @@ import java.util.stream.Stream;
                 )
         }
 )
-@Import(TestDataWebConfig.class) public class InventoryControllerTest {
+@Import(TestDataWebConfig.class)
+@EnableSpringDataWebSupport
+public class InventoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
 

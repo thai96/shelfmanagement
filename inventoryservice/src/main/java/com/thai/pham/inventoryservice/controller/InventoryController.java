@@ -16,7 +16,12 @@ import com.thai.pham.inventoryservice.dto.InventoryDto;
 @RestController
 @RequestMapping("api/v1/inventory/")
 public class InventoryController {
-    private InventoryService inventoryService;
+    private final InventoryService inventoryService;
+
+    @Autowired
+    public InventoryController(InventoryService inventoryService) {
+        this.inventoryService = inventoryService;
+    }
 
     @GetMapping("")
     public ResponseEntity<PageDto<InventoryDto>> getInventory(Pageable pageable) {
