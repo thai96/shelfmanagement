@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.UUID;
 
-@Component("productKeyGenerator")
+@Component
 public class SingleProductKeyGenerator implements KeyGenerator {
     private static final String CUSTOM_KEY_GENERATOR = ":";
     private static final String INVENTORY_SERVICE_CACHE_PREFIX = "inventoryservice";
