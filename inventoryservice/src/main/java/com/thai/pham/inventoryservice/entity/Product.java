@@ -15,12 +15,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-
+public class Product extends BaseEntity{
     @Column(name = "sku", unique = true, nullable = false)
     private String sku;
 

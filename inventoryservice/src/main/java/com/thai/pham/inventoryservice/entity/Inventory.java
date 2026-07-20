@@ -15,12 +15,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Inventory {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-
+public class Inventory extends BaseEntity{
     @Column(name = "qty_on_hand", columnDefinition = "INTEGER NOT NULL CHECK(qty_on_hand >= 0)")
     @ColumnDefault("0")
     private Integer qtyOnHand;

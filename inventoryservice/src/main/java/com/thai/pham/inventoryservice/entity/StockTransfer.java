@@ -14,12 +14,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StockTransfer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
-
+public class StockTransfer extends BaseEntity {
     @Column(name = "attributes", nullable = false)
     @Convert(converter = TransferStatus.TransferStatusConverter.class)
     private TransferStatus transferStatus;
