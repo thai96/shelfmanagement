@@ -1,15 +1,14 @@
 \set ON_ERROR_STOP on
 SET synchronous_commit = local;
 
-DO
-$$
+DO $$
 BEGIN
     IF NOT EXISTS (
       SELECT FROM pg_catalog.pg_roles
       WHERE rolname = 'inventory_readonly'
    ) THEN
         CREATE ROLE inventory_readonly;
-        GRANT CONNECT ON DATABASE inventory_db TO inventory_readonly;
+        GRANT CONNECT ON DATABASE mydb TO inventory_readonly;
         GRANT USAGE ON SCHEMA public TO inventory_readonly;
         GRANT SELECT ON ALL TABLES IN SCHEMA public TO inventory_readonly;
         GRANT SELECT ON ALL SEQUENCES IN SCHEMA public TO inventory_readonly;
@@ -29,5 +28,4 @@ EXCEPTION
     WHEN OTHERS THEN
         RAISE NOTICE 'Error Code: %', SQLSTATE;
         RAISE NOTICE 'Error Message: %', SQLERRM;
-END
-$$
+END $$;
