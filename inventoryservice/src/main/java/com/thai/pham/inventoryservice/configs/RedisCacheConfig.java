@@ -13,9 +13,8 @@ import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.JacksonJsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.*;
+import tools.jackson.databind.ObjectMapper;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -65,6 +64,14 @@ public class RedisCacheConfig {
     public RedisTemplate<String, Product> productRedisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Product> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
+        GenericJacksonJsonRedisSerializer jackson2JsonRedisSerializer = new GenericJacksonJsonRedisSerializer(new ObjectMapper());
+
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(jackson2JsonRedisSerializer);
+        template.setHashKeySerializer(new StringRedisSerializer());
+        template.setHashValueSerializer(jackson2JsonRedisSerializer);
+
+        template.afterPropertiesSet();
         return template;
     }
 
