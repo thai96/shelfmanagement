@@ -59,12 +59,14 @@ public class ProductService {
     private void cacheProductPage(String searchTerm, Page<Product> productPage, Pageable pageable) {
         String pageKey = productKeyGenerator.generatePageKey(searchTerm, pageable);
         List<UUID> idList = productPage.getContent().stream().map(Product::getId).toList();
-        redisService.saveItemIds(pageKey, idList);
-        Map<String, Product> productKeyMap = productPage.getContent().parallelStream().collect(Collectors.toMap(
-            productKeyGenerator::generateSingleProductKey,
-            Function.identity()
-        ));
-        redisService.saveProducts(productKeyMap);
+        if(!idList.isEmpty()) {
+            redisService.saveItemIds(pageKey, idList);
+            Map<String, Product> productKeyMap = productPage.getContent().parallelStream().collect(Collectors.toMap(
+                    productKeyGenerator::generateSingleProductKey,
+                    Function.identity()
+            ));
+            redisService.saveProducts(productKeyMap);
+        }
     }
 
     public Page<Product> findAllProductByName(String searchTerm, Pageable pageable) {
