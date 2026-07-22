@@ -12,12 +12,8 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import com.thai.pham.inventoryservice.interceptor.LoggingInterceptor;
 
 @Configuration
-@Aspect
 @EnableAspectJAutoProxy
-class LoggingConfig {
-    @Pointcut("execution(* com.thai.pham.inventoryservice.service.ProductService.*(..))")
-    public void productServiceFunctionMonitor() {}
-
+public class LoggingConfig {
     @Bean
     public LoggingInterceptor createMethodExecutionTimeMeasurer() {
         return new LoggingInterceptor();
@@ -26,7 +22,7 @@ class LoggingConfig {
     @Bean
     public Advisor createMethodExecutionTimeMeasurerAdvisor() {
         AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
-        pointcut.setExpression("com.thai.pham.inventoryservice.configs.LoggingConfig.productServiceFunctionMonitor()");
+        pointcut.setExpression("execution(* com.thai.pham.inventoryservice.service.ProductService.*(..))");
         return new DefaultPointcutAdvisor(pointcut, createMethodExecutionTimeMeasurer());
     }
 }
