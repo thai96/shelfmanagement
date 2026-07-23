@@ -39,7 +39,7 @@ class StockTransferController {
     }
 
     @PutMapping("/new")
-    public ResponseEntity<StockTransferDto> addTransfer(StockTransferDto insertInformation) {
+    public ResponseEntity<StockTransferDto> addTransfer(@RequestBody StockTransferDto insertInformation) {
         return new ResponseEntity<>(transferService.addTransfer(insertInformation), HttpStatus.OK);
     }
 }
