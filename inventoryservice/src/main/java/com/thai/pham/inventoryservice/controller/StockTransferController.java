@@ -28,8 +28,8 @@ class StockTransferController {
         return new ResponseEntity<>(transferService.getTransferStockPage(pageInfo), HttpStatus.OK);
     }
 
-    @GetMapping("{id}")
-    public ResponseEntity<StockTransferDto> getTransferInformation(UUID id) {
+    @GetMapping("/{id}")
+    public ResponseEntity<StockTransferDto> getTransferInformation(@PathVariable UUID id) {
         return new ResponseEntity<>(transferService.findTransferById(id), HttpStatus.OK);
     }
 
