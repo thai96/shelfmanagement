@@ -38,6 +38,7 @@ public class Inventory extends BaseEntity{
     @ColumnDefault("0")
     private Integer qtyAvailable;
 
+    @NotNull(message = EntityMessage.NULL_INVENTORY_LOCATION_MESSAGE)
     @ManyToOne(
         cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
         fetch = FetchType.LAZY
@@ -45,6 +46,7 @@ public class Inventory extends BaseEntity{
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
 
+    @NotNull(message = EntityMessage.NULL_INVENTORY_PRODUCT_MESSAGE)
     @ManyToOne(
         cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
         fetch = FetchType.LAZY

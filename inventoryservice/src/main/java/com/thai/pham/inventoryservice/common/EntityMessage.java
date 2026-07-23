@@ -9,5 +9,7 @@ public class EntityMessage {
     public static final String NULL_TRANSFER_STATUS_MESSAGE = "Stock transfer status must not be null";
     public static final String NULL_PRODUCT_TRANSFER_START_LOCATION_MESSAGE = "Transfer's start location must not be null";
     public static final String NULL_PRODUCT_TRANSFER_END_LOCATION_MESSAGE = "Transfer's end location must not be null";
+    public static final String NULL_INVENTORY_PRODUCT_MESSAGE = "Inventory's product must not be empty";
+    public static final String NULL_INVENTORY_LOCATION_MESSAGE = "Inventory's location must not be empty";
 
 }
