@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.thai.pham.inventoryservice.common.EntityMessage;
 
 @Entity
 @Table(name = "PRODUCT")
@@ -16,9 +19,11 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product extends BaseEntity{
+    @NotBlank(message = EntityMessage.EMPTY_PRODUCT_SKU_MESSAGE)
     @Column(name = "sku", unique = true, nullable = false)
     private String sku;
 
+    @NotBlank(message = EntityMessage.EMPTY_PRODUCT_NAME_MESSAGE)
     @Column(name = "name", nullable = false)
     private String productName;
 

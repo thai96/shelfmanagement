@@ -6,9 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 import java.util.UUID;
+
+import com.thai.pham.inventoryservice.common.EntityMessage;
 
 @Entity
 @Table(name = "Location")
@@ -17,6 +20,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Location extends BaseEntity {
+    @NotBlank(message = EntityMessage.EMPTY_LOCATION_NAME_MESSAGE)
     @Column(name = "name", nullable = false)
     private String name;
 

@@ -6,8 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
+
+import com.thai.pham.inventoryservice.common.EntityMessage;
 
 @Entity
 @Table(name = "INVENTORY")
@@ -16,14 +20,20 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Inventory extends BaseEntity{
+    @NotNull(message = EntityMessage.EMPTY_NUMERIC_VALUE_MESSAGE)
+    @Min(value = 1, message = EntityMessage.REQUIRED_WHOLE_NUMBER_NUMERIC_VALUE_MESSAGE)
     @Column(name = "qty_on_hand", columnDefinition = "INTEGER NOT NULL CHECK(qty_on_hand >= 0)")
     @ColumnDefault("0")
     private Integer qtyOnHand;
 
+    @NotNull(message = EntityMessage.EMPTY_NUMERIC_VALUE_MESSAGE)
+    @Min(value = 1, message = EntityMessage.REQUIRED_WHOLE_NUMBER_NUMERIC_VALUE_MESSAGE)
     @Column(name = "qty_reserved", columnDefinition = "INTEGER NOT NULL CHECK(qty_reserved >= 0)")
     @ColumnDefault("0")
     private Integer qtyReserved;
 
+    @NotNull(message = EntityMessage.EMPTY_NUMERIC_VALUE_MESSAGE)
+    @Min(value = 1, message = EntityMessage.REQUIRED_WHOLE_NUMBER_NUMERIC_VALUE_MESSAGE)
     @Column(name = "qty_available", columnDefinition = "INTEGER NOT NULL CHECK(qty_reserved >= 0)")
     @ColumnDefault("0")
     private Integer qtyAvailable;
