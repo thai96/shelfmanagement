@@ -84,14 +84,24 @@ public class InventoryService {
     }
 
     private Inventory processDeliveryAction(Inventory inventoryItem, int changeValue) {
+        if(!isValidOnHandQuantity()) {
+            return inventoryItem;
+        }
         inventoryItem.setQtyOnHand(inventoryItem.getQtyOnHand() - changeValue);
         inventoryItem.setQtyReserved(inventoryItem.getQtyReserved() - changeValue);
         return inventoryItem;
     }
 
     private Inventory processReserveAction(Inventory inventoryItem, int changeValue) {
+        if(!isValidOnHandQuantity()) {
+            return inventoryItem;
+        }
         inventoryItem.setQtyAvailable(inventoryItem.getQtyAvailable() - changeValue);
         inventoryItem.setQtyReserved(inventoryItem.getQtyReserved() + changeValue);
         return inventoryItem;
+    }
+
+    private Boolean isValidOnHandQuantity(Inventory inventory, int requiredQuantity) {
+        return inventory.getQtyAvailable() >= requiredQuantity && inventory.getQtyOnHand() >= requiredQuantity;
     }
 }
