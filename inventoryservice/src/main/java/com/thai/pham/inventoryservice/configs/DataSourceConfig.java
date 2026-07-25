@@ -33,6 +33,7 @@ public class DataSourceConfig {
     private final Integer maximumConnections; // Maximum NUMBER OF connection in the pool at the same time
     private final Integer leakThresholdInMillis; // Log possible leak connection
     private final Integer slaveCount;
+    private final Integer initializationFailTimeout;
 
     @Autowired
     public DataSourceConfig(
@@ -45,7 +46,8 @@ public class DataSourceConfig {
         @Value("${spring.datasource.driver-class-name}") String driverClassName,
         @Value("${spring.datasource.hikari.maximum-pool-size}") Integer maximumConnections,
         @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer leakThresholdInMillis,
-        @Value("${database.replication.count}") Integer slaveCount
+        @Value("${database.replication.count}") Integer slaveCount,
+        @Value("${spring.datasource.hikari.initialization-fail-timeout}") Integer initializationFailTimeout
     ) {
         this.masterUrl = masterUrl;
         this.slave1Url = slave1Url;
@@ -61,6 +63,7 @@ public class DataSourceConfig {
         this.maximumConnections = maximumConnections;
         this.leakThresholdInMillis = leakThresholdInMillis;
         this.slaveCount = slaveCount;
+        this.initializationFailTimeout = initializationFailTimeout;
     }
 
     @Bean
@@ -107,6 +110,7 @@ public class DataSourceConfig {
         dataSource.setMaximumPoolSize(maximumConnections);
         dataSource.setLeakDetectionThreshold(leakThresholdInMillis);
         dataSource.setDriverClassName(driverClassName);
+        dataSource.setInitializationFailTimeout(initializationFailTimeout);
         return dataSource;
     }
 }

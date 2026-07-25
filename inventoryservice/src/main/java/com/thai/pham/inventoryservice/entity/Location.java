@@ -57,7 +57,7 @@ public class Location extends BaseEntity {
     private List<StockTransfer> incomingTransfer;
 
     public Location(UUID id, String name, LocationType locationType, Boolean isActive) {
-        this.id = id;
+        super(id);
         this.name = name;
         this.locationType = locationType;
         this.isActive = isActive;

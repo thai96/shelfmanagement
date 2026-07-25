@@ -40,7 +40,7 @@ public class StockTransfer extends BaseEntity {
     private Location toLocation;
 
     public StockTransfer(UUID id, TransferStatus transferStatus) {
-        this.id = id;
+        super(id);
         this.transferStatus = transferStatus;
     }
 }

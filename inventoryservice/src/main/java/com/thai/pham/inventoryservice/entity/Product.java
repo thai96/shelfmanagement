@@ -40,9 +40,17 @@ public class Product extends BaseEntity{
     private List<Inventory> inventory;
 
     public Product(UUID id, String sku, String productName, ProductAttributes productAttributes) {
-        this.id = id;
+        super(id);
         this.sku = sku;
         this.productName = productName;
         this.productAttributes = productAttributes;
+    }
+
+    public Product(UUID id, String sku, String productName, ProductAttributes productAttributes, List<Inventory> inventory) {
+        super(id);
+        this.sku = sku;
+        this.inventory = inventory;
+        this.productAttributes = productAttributes;
+        this.productName = productName;
     }
 }

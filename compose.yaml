@@ -89,6 +89,7 @@ services:
       - POSTGRESQL_DATABASE=${POSTGRES_DB}
       - POSTGRESQL_NUM_SYNCHRONOUS_REPLICAS=${POSTGRES_TOTAL_REP}
       - BITNAMI_DEBUG=true
+      - POSTGRESQL_CLIENT_MIN_MESSAGES=notice
     ports:
       - "5432:5432"
     healthcheck:
