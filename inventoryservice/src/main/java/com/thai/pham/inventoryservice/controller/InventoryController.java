@@ -30,7 +30,7 @@ public class InventoryController {
     }
 
     @PostMapping("update")
-    public ResponseEntity<List<InventoryDto>> updateInventory(@RequestBody List<InventoryChangeDto> dataChangeList, @RequestParam("requestId") String requestId) {
+    public ResponseEntity<List<InventoryDto>> updateInventory(@RequestBody List<InventoryChangeDto> dataChangeList, @RequestHeader("Idempotency-Key") String requestId) {
         List<InventoryDto> changedData = inventoryService.updateInventory(dataChangeList, requestId);
         return new ResponseEntity<>(changedData, HttpStatus.OK);
     }
