@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.redis.connection.DataType;
 
 import java.util.List;
 import java.util.Map;
@@ -115,7 +116,7 @@ public class ProductService {
         }
         productRepo.deleteById(productId);
         redisService.deleteProduct(productKeyGenerator.generateSingleProductKey(product));
-        redisService.deleteItemsIds(productKeyGenerator.getPagePattern());
+        redisService.removeCachePageWithRegex(productKeyGenerator.getPagePattern(), DataType.LIST);
         return productRepo.existsById(productId);
     }
 
