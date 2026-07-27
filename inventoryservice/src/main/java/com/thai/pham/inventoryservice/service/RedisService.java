@@ -8,6 +8,7 @@ import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,28 @@ public class RedisService {
         Long listSize = listOps.size(key);
         listOps.rightPop(key, listSize);
         listOps.rightPushAll(key, itemIds);   
+    }
+
+    private Boolean isListKeyExists(String key) {
+        return uuidRedisTemplate.hasKey(key) && uuidRedisTemplate.type(key) == DataType.LIST;
+    }
+
+    public List<UUID> getItemIds(String key) {
+        if(isListKeyExists(key)) {
+            return null;
+        }
+        BoundListOperations<String, UUID> listOps = uuidRedisTemplate.boundListOps(key);
+        int listSize = listOps.size();
+        if(listSize <= 0) {
+            return new ArrayList<>();
+        }
+
+        return listOps.range(0, listSize);
+    }
+
+    public List<Product> getAllProduct(List<String> keyList) {
+        ValueOperations<String, Product> valueOps = productRedisTemplate.opsForValue();
+        return valueOps.multiGet(keyList);   
     }
 
     public Product obtainsSingleProduct(String key) {

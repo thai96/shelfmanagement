@@ -70,7 +70,23 @@ public class ProductService {
         }
     }
 
+    private List<Product> findAllProductInCache(String searchTerm, Pageable pageable) {
+        String pageKey = productKeyGenerator.generatePageKey(searchTerm, pageable);
+        List<UUID> cachedIds = redisService.getItemIds(pageKey);
+        if(cachedIds == null) {
+            return null;
+        }
+        List<String> keyList = cachedIds.stream().filter(Objects::nonNull)
+            .map(productKeyGenerator::generateSingleProductKey).filter(Objects::nonNull).toList();
+        return redisService.getAllProduct(keyList);
+    }
+
     public Page<Product> findAllProductByName(String searchTerm, Pageable pageable) {
+        List<Product> cachedData = findAllProductInCache(searchTerm, pageable);
+        if(cachedData != null && !cachedData.isEmpty()) {
+            return new PageImpl<>(cachedData, pageable, cachedData.size());
+        }
+
         Page<Product> productPage = isStringEmpty(searchTerm) ? productRepo.findAll(pageable) :
             productRepo.findProductByProductNameContaining(searchTerm, pageable);
         cacheProductPage(searchTerm, productPage, pageable);
