@@ -1,16 +1,15 @@
 package com.thai.pham.inventoryservice.configs.dbconnection;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class ReadRoutingDataSource extends AbstractRoutingDataSource {
-    private final DatasourceSelector selector;
+    private final DataSourceSelector selector;
 
     @Autowired
     public ReadRoutingDataSource(
-        DatasourceSelector selector
+        DataSourceSelector selector
     ) {
         this.selector = selector;
     }
@@ -24,8 +23,7 @@ public class ReadRoutingDataSource extends AbstractRoutingDataSource {
             return DataSourceType.MASTER;
         }
         
-        System.out.println("Routing to -> " + slaveKey);
-        return selector.selectDatasource(isReadOnly).orElse(DataSourceType.MASTER);
+        return selector.selectDatasource(true).orElse(DataSourceType.MASTER);
         
     }
 }

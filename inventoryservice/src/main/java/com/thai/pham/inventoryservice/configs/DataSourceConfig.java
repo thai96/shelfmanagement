@@ -1,6 +1,11 @@
 package com.thai.pham.inventoryservice.configs;
 
+import com.thai.pham.inventoryservice.configs.dbconnection.DataSourceSelector;
+import com.thai.pham.inventoryservice.configs.dbconnection.DataSourceType;
+import com.thai.pham.inventoryservice.configs.dbconnection.ReadRoutingDataSource;
+import com.thai.pham.inventoryservice.configs.dbconnection.RoundRobinSelector;
 import com.zaxxer.hikari.HikariDataSource;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +18,7 @@ import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Configuration
@@ -21,7 +27,7 @@ public class DataSourceConfig {
     private static final Logger log = LoggerFactory.getLogger(DataSourceConfig.class);
     private final String masterUrl;
     private final String slave1Url;
-//    private final String slave2Url;
+    //    private final String slave2Url;
 //    private final String slave3Url;
 //    private final String slave4Url;
 //    private final String slave5Url;
@@ -37,17 +43,17 @@ public class DataSourceConfig {
 
     @Autowired
     public DataSourceConfig(
-        @Value("${database.master.url}") String masterUrl,
-        @Value("${database.slaves.slave1.url}") String slave1Url,
-        @Value("${spring.datasource.username}") String userName,
-        @Value("${spring.datasource.password}") String password,
-        @Value("${spring.datasource.slave.username}") String userNameSlave,
-        @Value("${spring.datasource.slave.password}") String passwordSlave,
-        @Value("${spring.datasource.driver-class-name}") String driverClassName,
-        @Value("${spring.datasource.hikari.maximum-pool-size}") Integer maximumConnections,
-        @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer leakThresholdInMillis,
-        @Value("${database.replication.count}") Integer slaveCount,
-        @Value("${spring.datasource.hikari.initialization-fail-timeout}") Integer initializationFailTimeout
+            @Value("${database.master.url}") String masterUrl,
+            @Value("${database.slaves.slave1.url}") String slave1Url,
+            @Value("${spring.datasource.username}") String userName,
+            @Value("${spring.datasource.password}") String password,
+            @Value("${spring.datasource.slave.username}") String userNameSlave,
+            @Value("${spring.datasource.slave.password}") String passwordSlave,
+            @Value("${spring.datasource.driver-class-name}") String driverClassName,
+            @Value("${spring.datasource.hikari.maximum-pool-size}") Integer maximumConnections,
+            @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer leakThresholdInMillis,
+            @Value("${database.replication.count}") Integer slaveCount,
+            @Value("${spring.datasource.hikari.initialization-fail-timeout}") Integer initializationFailTimeout
     ) {
         this.masterUrl = masterUrl;
         this.slave1Url = slave1Url;
@@ -67,7 +73,7 @@ public class DataSourceConfig {
     }
 
     @Bean
-    public DataSource routingDataSource() {
+    public DataSource routingDataSource(DataSourceSelector dataSourceSelector) {
         Map<Object, Object> targetDataSources = new HashMap<>();
         log.info("_______DB Info Log_______");
         log.info("master url {}", masterUrl);
@@ -88,7 +94,7 @@ public class DataSourceConfig {
 //        targetDataSources.put("slave4", createDataSource(slave4Url));
 //        targetDataSources.put("slave5", createDataSource(slave5Url));
 
-        ReadRoutingDataSource routingDataSource = new ReadRoutingDataSource(slaveCount);
+        ReadRoutingDataSource routingDataSource = new ReadRoutingDataSource(dataSourceSelector);
         routingDataSource.setDefaultTargetDataSource(master);
         routingDataSource.setTargetDataSources(targetDataSources);
         routingDataSource.afterPropertiesSet();
@@ -112,5 +118,16 @@ public class DataSourceConfig {
         dataSource.setDriverClassName(driverClassName);
         dataSource.setInitializationFailTimeout(initializationFailTimeout);
         return dataSource;
+    }
+
+    @Bean
+    public DataSourceSelector dataSourceSelector() {
+        CircuitBreakerConfig config = CircuitBreakerConfig.custom()
+                .failureRateThreshold(0.6f)
+                .slidingWindow(5, 3, CircuitBreakerConfig.SlidingWindowType.TIME_BASED)
+                .permittedNumberOfCallsInHalfOpenState(3)
+                .build();
+        List<DataSourceType> types = List.of(DataSourceType.SLAVE_0);
+        return new RoundRobinSelector(config, types);
     }
 }

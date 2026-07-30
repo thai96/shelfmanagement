@@ -1,6 +1,10 @@
 package com.thai.pham.inventoryservice.configs.dbconnection;
 
-public interface DatasourceSelector {
-    public Optional<DataSource> selectDatasource(boolean isReadOnly);
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+
+import java.util.Optional;
+
+public interface DataSourceSelector {
+    public Optional<DataSourceType> selectDatasource(boolean isReadOnly);
     public CircuitBreaker breakerOf(DataSourceType type);
 }
