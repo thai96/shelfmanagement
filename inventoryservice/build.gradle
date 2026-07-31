@@ -33,7 +33,10 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-actuator')
 	implementation('org.springframework.boot:spring-boot-starter-aspectj')
 //	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat-runtime'
-	implementation 'io.github.resilience4j:resilience4j-circuitbreaker:2.4.0'
+	implementation 'io.github.resilience4j:resilience4j-circuitbreaker'
+	implementation 'io.github.resilience4j:resilience4j-spring-boot3'
+	implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+	implementation 'net.logstash.logback:logstash-logback-encoder'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
