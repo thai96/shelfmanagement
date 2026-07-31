@@ -2,10 +2,12 @@ package com.thai.pham.inventoryservice.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotation.media.Schema;
+import lombok.Builder;
 
 import java.time.Instant;
 import java.util.List;
 
+@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Schema(description = "Cấu trúc trả lời lỗi của hệ thống")
 public record ErrorResponse(
@@ -22,7 +24,9 @@ public record ErrorResponse(
     @Schema(description = "Chi tiết debug")
     String debugDetail,
     @Schema(description = "Danh sách lỗi validation theo field (nếu có)")
-    List<FieldError> fieldErrors
+    List<FieldError> fieldErrors,
+    @Schema(description = "Stacktrace lỗi")
+    List<String> debugStackTrace
 ) {
     public record FieldError(String field, String constraint) {}   
 }
