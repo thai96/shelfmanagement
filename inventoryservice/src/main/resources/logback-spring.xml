@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <conversionRule conversionWord="maskedMsg"
+        converterClass="com.thai.pham.inventoryservice.common.logging.SensitiveDatamaskingConverter"/>
+
+    <springProfile name="debug">
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{HH:mm:ss.SSS}%-5level [%X{traceId:-}] %logger{30} - %maskedMsg%n%ex{10}</pattern>
+            </encoder>
+        </appender>
+        <logger name="com.thai.pham" level="DEBUG"/>
+        <root level="INFO"><appender-ref ref="CONSOLE"/></root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <appender name="JSON" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <file>/var/log/app/application.json</file>
+            <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                <fileNamePattern>/var/log/app/application-%d{yyyy-MM-dd}.%i.json.gz</fileNamePattern>
+                <maxFileSize>200MB</maxFileSize>
+                <maxHistory>14</maxHistory>
+            </rollingPolicy>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <includeMdcKeyName>traceId</includeMdcKeyName>
+                <includeMdcKeyName>spanId</includeMdcKeyName>
+                <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                    <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                    <rootCauseFirst>true</rootCauseFirst>
+                </throwableConverter>
+            </encoder>
+        </appender>
+
+        <appender>
+            <appender-ref ref="JSON"/>
+            <queueSize>8192</queueSize>
+            <discardingThreshold>0</discardingThreshold>
+            <neverBlock>true</neverBlock>
+        </appender>
+
+        <logger name="com.thai.pham" level="INFO"/>
+        <logger name="org.springframwork" level="WARN"/>
+        <logger name="org.hibernate" level="WARN"/>
+        <root level="INFO"><appender-ref ref="ASUNC_JSON"/></root>
+    </springProfile>    
+</configuration>

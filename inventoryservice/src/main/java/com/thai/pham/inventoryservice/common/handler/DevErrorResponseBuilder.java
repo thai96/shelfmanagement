@@ -11,7 +11,7 @@ import com.thai.pham.inventoryservice.common.ErrorCode;
 import com.thai.pham.inventoryservice.common.ErrorResponse;
 
 @Component
-@Profile("!prod")
+@Profile("debug")
 public class DevErrorResponseBuilder implements ErrorResponseBuilder {
     public static final int MAX_STACK_LINES = 10;
 
