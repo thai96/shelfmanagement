@@ -1,27 +1,34 @@
 package com.thai.pham.inventoryservice.interceptor;
 
-import org.springframework.aop.interceptor.AbstractMonitoringInterceptor;
-import org.aopalliance.intercept.MethodInvocation;
-import org.apache.commons.logging.Log;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import java.lang.Throwable;
 import java.lang.System;
 
-public class LoggingInterceptor extends AbstractMonitoringInterceptor {
-    public LoggingInterceptor() {}
+@Aspect
+@Component
+public class LoggingInterceptor {
+    private static final Logger log = LoggerFactory.getLogger(LoggingInterceptor.class);
 
-    @Override
-    public Object invokeUnderTrace(MethodInvocation invocation, Log log) throws Throwable {
-        String name = createInvocationTraceName(invocation);
+    @Around("execution(public * com.thai.pham.inventoryservice.service.ProductService.*(..))")
+    public Object invokeUnderTrace(ProceedingJoinPoint jointPoint) throws Throwable {
+        String name = jointPoint.getSignature().getName();
         long start = System.currentTimeMillis();
         try {
-            return invocation.proceed();
+            return jointPoint.proceed();
         } finally {
             long end = System.currentTimeMillis();
             long time = end - start;
-            log.info("Method " + name + " execution last:" + time + "ms");
+            log.info("Method {} execution last:{}ms", name, time);
             if(time > 10) {
                 log.warn("Method execution longer than 10 ms!");
             }
         }
     }
+
 }
