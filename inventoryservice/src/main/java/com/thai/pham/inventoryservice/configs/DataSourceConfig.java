@@ -38,7 +38,6 @@ public class DataSourceConfig {
     private final String driverClassName;
     private final Integer maximumConnections; // Maximum NUMBER OF connection in the pool at the same time
     private final Integer leakThresholdInMillis; // Log possible leak connection
-    private final Integer slaveCount;
     private final Integer initializationFailTimeout;
 
     @Autowired
@@ -52,7 +51,6 @@ public class DataSourceConfig {
             @Value("${spring.datasource.driver-class-name}") String driverClassName,
             @Value("${spring.datasource.hikari.maximum-pool-size}") Integer maximumConnections,
             @Value("${spring.datasource.hikari.leak-detection-threshold}") Integer leakThresholdInMillis,
-            @Value("${database.replication.count}") Integer slaveCount,
             @Value("${spring.datasource.hikari.initialization-fail-timeout}") Integer initializationFailTimeout
     ) {
         this.masterUrl = masterUrl;
@@ -68,7 +66,6 @@ public class DataSourceConfig {
         this.driverClassName = driverClassName;
         this.maximumConnections = maximumConnections;
         this.leakThresholdInMillis = leakThresholdInMillis;
-        this.slaveCount = slaveCount;
         this.initializationFailTimeout = initializationFailTimeout;
     }
 
@@ -120,14 +117,17 @@ public class DataSourceConfig {
         return dataSource;
     }
 
-    @Bean
-    public DataSourceSelector dataSourceSelector() {
-        CircuitBreakerConfig config = CircuitBreakerConfig.custom()
+    @Bean("roundRobinConfig")
+    public CircuitBreakerConfig roundRobinCircuitConfig() {
+        return CircuitBreakerConfig.custom()
                 .failureRateThreshold(0.6f)
                 .slidingWindow(5, 3, CircuitBreakerConfig.SlidingWindowType.TIME_BASED)
                 .permittedNumberOfCallsInHalfOpenState(3)
                 .build();
-        List<DataSourceType> types = List.of(DataSourceType.SLAVE_0);
-        return new RoundRobinSelector(config, types);
+    }
+
+    @Bean
+    public List<DataSourceType> dataSourceTypeList() {
+        return List.of(DataSourceType.SLAVE_0);
     }
 }

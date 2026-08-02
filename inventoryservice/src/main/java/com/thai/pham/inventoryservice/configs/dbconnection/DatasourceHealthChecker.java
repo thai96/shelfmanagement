@@ -18,8 +18,8 @@ public class DatasourceHealthChecker {
     private final Map<DataSourceType, DataSource> slaveDataSources;
 
     @Autowired
-    public DatasourceHealthChecker(DataSourceSelector datasourceSelector, Map<DataSourceType, DataSource> slaveDataSources) {
-        this.datasourceSelector = datasourceSelector;
+    public DatasourceHealthChecker(DataSourceSelector dataSourceSelector, Map<DataSourceType, DataSource> slaveDataSources) {
+        this.datasourceSelector = dataSourceSelector;
         this.slaveDataSources = slaveDataSources;
     }
 

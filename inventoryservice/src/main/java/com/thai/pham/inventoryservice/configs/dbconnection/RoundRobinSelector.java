@@ -4,6 +4,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 
@@ -18,7 +19,7 @@ public class RoundRobinSelector implements DataSourceSelector {
     private final AtomicInteger selectionCounter = new AtomicInteger(0);
 
     @Autowired
-    public RoundRobinSelector(CircuitBreakerConfig config, List<DataSourceType> selectTypeList) {
+    public RoundRobinSelector(@Qualifier("roundRobinConfig") CircuitBreakerConfig config, List<DataSourceType> selectTypeList) {
         this.registry = CircuitBreakerRegistry.of(config);
         selectTypeList.forEach(t -> registry.circuitBreaker(t.name()));
         this.selectTypeList = selectTypeList;
