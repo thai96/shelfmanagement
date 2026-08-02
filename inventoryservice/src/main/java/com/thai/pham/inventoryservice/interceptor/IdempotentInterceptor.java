@@ -1,5 +1,8 @@
 package com.thai.pham.inventoryservice.interceptor;
 
+import com.thai.pham.inventoryservice.keygenerator.IdempotentKeyGenerator;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -7,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import com.thai.pham.inventoryservice.models.RequestProcessState;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.time.Duration;
 
 @Component
 public class IdempotentInterceptor implements HandlerInterceptor {
@@ -32,17 +38,17 @@ public class IdempotentInterceptor implements HandlerInterceptor {
             return true;
         }
         String idempotentKey = idempotentKeyGenerator.generateKey(key);
-        RequestProcessState requestProcessState = redisProcessor.opsForValue().setIfAbsent(idempotentKey, RequestProcessState.PROCESSING, Duration.ofMillis(IDEMPOTENT_VALUE_TTL_MILLIS));
-        if(!RequestProcessState.COMPLETED.equals(requestProcessState)) {
+        Boolean isKeyNotExisted = redisProcessor.opsForValue().setIfAbsent(idempotentKey, RequestProcessState.PROCESSING, Duration.ofMillis(IDEMPOTENT_VALUE_TTL_MILLIS));
+        if(!isKeyNotExisted) {
             RequestProcessState currentRequestState = redisProcessor.opsForValue().get(idempotentKey);
             if(currentRequestState != null) {
                 switch(currentRequestState) {
-                    case RequestProcessState.PROCESSING: {
+                    case PROCESSING: {
                         response.setStatus(HttpStatus.CONFLICT.value());
                         response.getWriter().write(IDEMPOTENT_REQUEST_PROCESSING_MSG);
                         return false;
                     }
-                    case RequestProcessState.COMPLETED: {
+                    case COMPLETED: {
                         response.setStatus(HttpStatus.OK.value());
                         // response.getWriter().write(IDEMPOTENT_REQUEST_PROCESSING_MSG);
                         return false;

@@ -5,11 +5,7 @@ import com.thai.pham.inventoryservice.dto.InventoryDto;
 import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.DataType;
-import org.springframework.data.redis.core.Cursor;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.BoundListOperations;
-import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.*;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -50,7 +46,7 @@ public class RedisService {
             return null;
         }
         BoundListOperations<String, UUID> listOps = uuidRedisTemplate.boundListOps(key);
-        int listSize = listOps.size();
+        Long listSize = listOps.size();
         if(listSize <= 0) {
             return new ArrayList<>();
         }

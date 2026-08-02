@@ -10,9 +10,8 @@ import com.thai.pham.inventoryservice.repository.ProductRepository;
 import com.thai.pham.inventoryservice.mapper.ProductInventoryDetailMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +19,7 @@ import org.springframework.data.redis.connection.DataType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -77,7 +77,7 @@ public class ProductService {
             return null;
         }
         List<String> keyList = cachedIds.stream().filter(Objects::nonNull)
-            .map(productKeyGenerator::generateSingleProductKey).filter(Objects::nonNull).toList();
+            .map(productKeyGenerator::generateProductKeyById).filter(Objects::nonNull).toList();
         return redisService.getAllProduct(keyList);
     }
 
