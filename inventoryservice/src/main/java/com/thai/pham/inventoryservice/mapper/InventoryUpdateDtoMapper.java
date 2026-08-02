@@ -3,6 +3,7 @@ package com.thai.pham.inventoryservice.mapper;
 import com.thai.pham.inventoryservice.dto.InventoryUpdateDto;
 import com.thai.pham.inventoryservice.entity.Inventory;
 import com.thai.pham.inventoryservice.entity.Location;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -16,18 +17,15 @@ public class InventoryUpdateDtoMapper {
     public InventoryUpdateDtoMapper(LocationDtoMapper locationMapper) {
         this.locationMapper = locationMapper;
     }
-    
+
     public Inventory mapEntity(InventoryUpdateDto inventoryDto) {
-        Inventory entityObject = new Inventory();
+        val inventoryBuilder = Inventory.builder();
         Optional.ofNullable(inventoryDto.getLocation()).ifPresent(locationDto -> {
             Location location = locationMapper.mapEntity(locationDto);
-            entityObject.setLocation(location);
+            inventoryBuilder.location(location);
         });
-        entityObject.setId(inventoryDto.getId());
-        entityObject.setQtyOnHand(inventoryDto.getQtyOnHand());
-        entityObject.setQtyReserved(inventoryDto.getQtyReserved());
-        entityObject.setQtyAvailable(inventoryDto.getQtyAvailable());
-        return entityObject;
+        inventoryBuilder.id(inventoryDto.getId()).qtyOnHand(inventoryDto.getQtyOnHand()).qtyReserved(inventoryDto.getQtyReserved()).qtyAvailable(inventoryDto.getQtyAvailable());
+        return inventoryBuilder.build();
     }
 
     public InventoryUpdateDto mapObject(Inventory inventory) {

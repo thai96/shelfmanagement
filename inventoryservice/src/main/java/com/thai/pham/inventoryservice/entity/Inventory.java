@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -17,9 +18,9 @@ import com.thai.pham.inventoryservice.common.EntityMessage;
 @Table(name = "INVENTORY")
 @Getter
 @Setter
-@NoArgsConstructor
+@SuperBuilder
 @AllArgsConstructor
-public class Inventory extends BaseEntity{
+public class Inventory extends BaseEntity {
     @NotNull(message = EntityMessage.EMPTY_NUMERIC_VALUE_MESSAGE)
     @Min(value = 1, message = EntityMessage.REQUIRED_WHOLE_NUMBER_NUMERIC_VALUE_MESSAGE)
     @Column(name = "qty_on_hand", columnDefinition = "INTEGER NOT NULL CHECK(qty_on_hand >= 0)")
@@ -40,16 +41,16 @@ public class Inventory extends BaseEntity{
 
     @NotNull(message = EntityMessage.NULL_INVENTORY_LOCATION_MESSAGE)
     @ManyToOne(
-        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
-        fetch = FetchType.LAZY
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
     )
     @JoinColumn(name = "location_id", referencedColumnName = "id")
     private Location location;
 
     @NotNull(message = EntityMessage.NULL_INVENTORY_PRODUCT_MESSAGE)
     @ManyToOne(
-        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
-        fetch = FetchType.LAZY
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
+            fetch = FetchType.LAZY
     )
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;

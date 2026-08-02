@@ -84,7 +84,7 @@ public class InventoryService {
     }
 
     private Inventory processDeliveryAction(Inventory inventoryItem, int changeValue) {
-        if(!isValidOnHandQuantity()) {
+        if(!isValidOnHandQuantity(inventoryItem, changeValue)) {
             return inventoryItem;
         }
         inventoryItem.setQtyOnHand(inventoryItem.getQtyOnHand() - changeValue);
@@ -93,7 +93,7 @@ public class InventoryService {
     }
 
     private Inventory processReserveAction(Inventory inventoryItem, int changeValue) {
-        if(!isValidOnHandQuantity()) {
+        if(!isValidOnHandQuantity(inventoryItem, changeValue)) {
             return inventoryItem;
         }
         inventoryItem.setQtyAvailable(inventoryItem.getQtyAvailable() - changeValue);
