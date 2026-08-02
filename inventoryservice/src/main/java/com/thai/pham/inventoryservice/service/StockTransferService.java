@@ -45,16 +45,16 @@ public class StockTransferService {
         return transferMapper.mapObject(transferEntity);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional()
     public StockTransferDto updateTransferInformation(StockTransferDto dto) {
         StockTransfer transferEntity = transferMapper.mapEntity(dto);
         return transferMapper.mapObject(stockTransferRepo.saveAndFlush(transferEntity));
     }
 
-    @Transactional(readOnly = false)
-    public StockTransferDto  addTransfer(StockTransferDto insertInformation) {
+    @Transactional()
+    public StockTransferDto addTransfer(StockTransferDto insertInformation) {
+        insertInformation.setTransferId(null);
         StockTransfer transferEntity = transferMapper.mapEntity(insertInformation);
-        transferEntity.setId(null);
         return transferMapper.mapObject(stockTransferRepo.saveAndFlush(transferEntity));
     }
 }
