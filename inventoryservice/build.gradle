@@ -9,8 +9,10 @@ group = 'com.thai.pham'
 version = '0.0.1-SNAPSHOT'
 
 java {
+	sourceCompatibility = 21
+	targetCompatibility = 21
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
+		languageVersion = JavaLanguageVersion.of(21)
 	}
 }
 

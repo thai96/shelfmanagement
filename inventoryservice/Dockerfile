@@ -1,5 +1,5 @@
 # Sử dụng base image là Java 17 bản rút gọn (Alpine) cho nhẹ
-FROM gradle:9.5.1-jdk17-alpine AS builder
+FROM gradle:9.5.1-jdk21-alpine AS builder
 
 ENV APP_HOME=/usr/app/
 # Cấu hình thư mục làm việc bên trong container
@@ -18,7 +18,7 @@ RUN gradle clean :inventoryservice:bootJar -x test
 
 # Copy file .jar sau khi build vào trong container
 # Đảm bảo bạn đã chạy 'mvn clean package' trước đó
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:21-jre-alpine
 ENV APP_HOME=/usr/app/
 WORKDIR $APP_HOME
 COPY --from=builder $APP_HOME/inventoryservice/build/libs/*SNAPSHOT.jar app.jar
