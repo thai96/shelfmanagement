@@ -21,8 +21,8 @@ import java.time.Instant;
 import java.util.List;
 
 import com.thai.pham.inventoryservice.common.exception.BaseBusinessException;
-import com.thai.pham.inventoryservice.common.ErrorCode;
-import com.thai.pham.inventoryservice.common.ErrorResponse;
+import com.thai.pham.inventoryservice.common.response.ErrorCode;
+import com.thai.pham.inventoryservice.common.response.ErrorResponse;
 
 @RestControllerAdvice(basePackages = "com.thai.pham")
 public class GlobalExceptionHandler {
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
         String traceId = currentTraceId();
         log.warn("[{}] bussiness error code={} path={}", traceId, code.getCode(), req.getRequestURI());
         countError(code);
-        return ResponseEntity.status(code,getStatus()).body(responseBuilder.build(code, ex, req, traceId));
+        return ResponseEntity.status(code.getStatus()).body(responseBuilder.build(code, ex, req, traceId));
    }
 
    @ExceptionHandler({OptimisticLockingFailureException.class, PessimisticLockingFailureException.class})
@@ -67,22 +67,22 @@ public class GlobalExceptionHandler {
 
    @ExceptionHandler(MethodArgumentNotValidException.class)
    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
-        ErrorCode code = ErrorCode.INVALID_INPUT;
-        String traceId = currentTraceId();
-        List<ErrorResponse.FieldError> details = ex.getBindingResult().getFieldErrors().stream()
-            .map(f -> new ErrorResponse.FieldError(f.getField(), f.getDefaultMessage())).toList();
-        ErrorResponse base = responseBuilder.build(code, ex, req, traceId);
-        ErrorResponse withDetails = ErrorResponse.builder()
-            .errorCode(base.errorCode())
-            .message(base.message())
-            .traceId(base.traceId())
-            .timestamp(Instant.now())
-            .path(base.path())
-            .debugDetail(details)
-            .fieldErrors(base.debugException())
-            .debugStackTrace(base.debugStackTrace())
-            .build();
-        countError(code);
+       ErrorCode code = ErrorCode.INVALID_INPUT;
+       String traceId = currentTraceId();
+       List<ErrorResponse.FieldError> details = ex.getBindingResult().getFieldErrors().stream()
+               .map(f -> new ErrorResponse.FieldError(f.getField(), f.getDefaultMessage())).toList();
+       ErrorResponse base = responseBuilder.build(code, ex, req, traceId);
+       countError(code);
+       ErrorResponse withDetails = ErrorResponse.builder()
+               .errorCode(base.errorCode())
+               .message(base.message())
+               .traceId(base.traceId())
+               .timestamp(Instant.now())
+               .path(base.path())
+               .debugDetail(base.debugDetail())
+               .fieldErrors(details)
+               .debugStackTrace(base.debugStackTrace())
+               .build();
         return ResponseEntity.status(code.getStatus()).body(withDetails);
    }
 
@@ -93,7 +93,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnknown(Exception ex, HttpServletRequest req) {
-        return infraError(ErrorCode.INTERNAL_SERVER_ERROR, ex, req);
+        return infraError(ErrorCode.INTERNAL_ERROR, ex, req);
     }
 
     private ResponseEntity<ErrorResponse> infraError(ErrorCode code, Exception ex, HttpServletRequest req) {
@@ -109,7 +109,7 @@ public class GlobalExceptionHandler {
     }
 
    private String currentTraceId() {
-        Span span = tracer.currentSpan()
+        Span span = tracer.currentSpan();
         return span != null ? span.context().traceId() : DEFAULT_TRACE_ID;
    }
 

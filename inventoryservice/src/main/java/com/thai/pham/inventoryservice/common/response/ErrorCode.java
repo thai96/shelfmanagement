@@ -1,5 +1,7 @@
-package com.thai.pham.inventoryservice.common;
+package com.thai.pham.inventoryservice.common.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor

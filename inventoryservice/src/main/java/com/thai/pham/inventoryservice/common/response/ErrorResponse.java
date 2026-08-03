@@ -1,7 +1,7 @@
-package com.thai.pham.inventoryservice.common;
+package com.thai.pham.inventoryservice.common.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import io.swagger.v3.oas.annotation.media.Schema;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
 import java.time.Instant;

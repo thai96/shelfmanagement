@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-import com.thai.pham.inventoryservice.common.ErrorCode;
+import com.thai.pham.inventoryservice.common.response.ErrorCode;
 import com.thai.pham.inventoryservice.common.ErrorResponse;
 
 @Component

@@ -1,6 +1,6 @@
 package com.thai.pham.inventoryservice.common.exception;
 
-import com.thai.pham.inventoryservice.common.ErrorCode;
+import com.thai.pham.inventoryservice.common.response.ErrorCode;
 
 public class InventoryException extends BaseBusinessException {
     public InventoryException(ErrorCode errorCode) {
@@ -8,7 +8,7 @@ public class InventoryException extends BaseBusinessException {
     }
 
     public InventoryException(ErrorCode errorCode, Throwable cause) {
-        super(errorCode.getMessage(), cause);
+        super(errorCode, cause);
     }
 
     public static InventoryException outOfStock() {
