@@ -1,0 +1,5 @@
+url: ${db_url}
+username: ${migra_user}
+password: ${migra_password}
+driver: ${db_driver}
+changeLogFile: src/main/resources/db/changelog.xml
