@@ -2,7 +2,7 @@ package com.thai.pham.inventoryservice.common.exception;
 
 import lombok.Getter;
 
-import com.thai.pham.inventoryservice.common.ErrorCode;
+import com.thai.pham.inventoryservice.common.response.ErrorCode;
 
 @Getter
 public abstract class BaseBusinessException extends RuntimeException {

@@ -1,6 +1,7 @@
 package com.thai.pham.inventoryservice.common.exception;
 
-import com.thai.pham.inventoryservice.common.ErrorCode;
+
+import com.thai.pham.inventoryservice.common.response.ErrorCode;
 
 public class OrderException extends BaseBusinessException {
     public OrderException(ErrorCode errorCode) {
@@ -8,6 +9,6 @@ public class OrderException extends BaseBusinessException {
     }
 
     public OrderException(ErrorCode errorCode, Throwable cause) {
-        super(errorCode.getMessage(), cause);
+        super(errorCode, cause);
     }
 }

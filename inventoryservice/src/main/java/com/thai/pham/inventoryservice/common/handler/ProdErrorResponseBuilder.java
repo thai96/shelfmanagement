@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import java.time.Instant;
 
-import com.thai.pham.inventoryservice.common.ErrorCode;
+import com.thai.pham.inventoryservice.common.response.ErrorCode;
 import com.thai.pham.inventoryservice.common.ErrorResponse;
 
 @Component

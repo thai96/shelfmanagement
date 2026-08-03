@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <conversionRule conversionWord="maskedMsg"
-        converterClass="com.thai.pham.inventoryservice.common.logging.SensitiveDatamaskingConverter"/>
+        converterClass="com.thai.pham.inventoryservice.common.logging.SensitiveDataMaskingConverter"/>
 
     <springProfile name="debug">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
