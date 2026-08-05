@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="V1_001" author="thai.pham">
+        <createTable name="location">
+            <column name="id" type="uuid" defaultValueComputed="${uuidFunction}">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="clob" />
+            <column name="type" type="clob">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="V1_001pg" author="thai.pham" dbms="postgresql">
+        <sqlFile path="db/changelogs/v1.0/postgresql/001_location_table_constraint.sql"/>
+    </changeSet>
+</databaseChangeLog>

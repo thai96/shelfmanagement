@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="V1_003" author="thai.pham">
+        <createTable name="stock_transfer">
+            <column name="id" type="uuid" defaultValueComputed="${uuidFunction}">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="from_location" type="uuid">
+                <constraints nullable="false"/>
+                <constraints foreignKeyName="fk_stock_transfer_location_from_location" 
+                     references="location(id)"/>
+            </column>
+            <column name="to_location" type="uuid">
+                <constraints nullable="false"/>
+                <constraints foreignKeyName="fk_stock_transfer_location_to_location" 
+                     references="location(id)"/>
+            </column>
+            <column name="status" type="clob">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="V1_003pg" author="thai.pham" dbms="postgresql">
+        <sqlFile path="db/changelogs/v1.0/postgresql/003_stock_transfer_constraint.sql"/>
+    </changeSet>
+</databaseChangeLog>

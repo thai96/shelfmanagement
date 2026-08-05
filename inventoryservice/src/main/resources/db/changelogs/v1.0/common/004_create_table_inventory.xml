@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="V1_004" author="thai.pham">
+        <createTable name="inventory">
+            <column name="id" type="uuid" defaultValueComputed="${uuidFunction}">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="location_id" type="uuid">
+                <constraints nullable="false"/>
+                <constraints foreignKeyName="fk_inventory_location_location_id" 
+                     references="location(id)"/>
+            </column>
+            <column name="product_id" type="uuid">
+                <constraints nullable="false"/>
+                <constraints foreignKeyName="fk_inventory_product_product_id" 
+                     references="product(id)"/>
+            </column>
+            <column name="qty_on_hand" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="qty_reserved" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="qty_available" type="int">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="V1_004pg" author="thai.pham" dbms="postgresql">
+        <sqlFile path="db/changelogs/v1.0/postgresql/004_inventory_constraint.sql"/>
+    </changeSet>
+</databaseChangeLog>
