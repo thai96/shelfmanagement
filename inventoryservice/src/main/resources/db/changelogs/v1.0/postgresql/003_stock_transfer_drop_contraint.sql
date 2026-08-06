@@ -1,0 +1,1 @@
+ALTER TABLE stock_transfer DROP CONSTRAINT chk_stock_transfer_status;

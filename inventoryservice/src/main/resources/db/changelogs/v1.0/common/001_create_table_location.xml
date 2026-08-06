@@ -19,5 +19,8 @@
     </changeSet>
     <changeSet id="V1_001pg" author="thai.pham" dbms="postgresql">
         <sqlFile path="db/changelogs/v1.0/postgresql/001_location_table_constraint.sql"/>
+        <rollback>
+            <sqlFile path="db/changelogs/v1.0/postgresql/001_location_table_drop_constraint.sql"/>
+        </rollback>
     </changeSet>
 </databaseChangeLog>

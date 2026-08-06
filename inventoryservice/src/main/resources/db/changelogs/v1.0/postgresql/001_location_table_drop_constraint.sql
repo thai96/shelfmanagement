@@ -1,0 +1,1 @@
+ALTER TABLE location DROP  CONSTRAINT chk_location_type;
