@@ -6,6 +6,7 @@ import com.thai.pham.inventoryservice.entity.Product;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -34,7 +35,7 @@ public class RedisService {
         ListOperations<String, UUID> listOps = uuidRedisTemplate.opsForList();
         Long listSize = listOps.size(key);
         listOps.rightPop(key, listSize);
-        listOps.rightPushAll(key, itemIds);   
+        listOps.rightPushAll(key, itemIds);
     }
 
     private Boolean isListKeyExists(String key) {
@@ -42,12 +43,12 @@ public class RedisService {
     }
 
     public List<UUID> getItemIds(String key) {
-        if(isListKeyExists(key)) {
+        if (isListKeyExists(key)) {
             return null;
         }
         BoundListOperations<String, UUID> listOps = uuidRedisTemplate.boundListOps(key);
         Long listSize = listOps.size();
-        if(listSize <= 0) {
+        if (listSize <= 0) {
             return new ArrayList<>();
         }
 
@@ -56,7 +57,7 @@ public class RedisService {
 
     public List<Product> getAllProduct(List<String> keyList) {
         ValueOperations<String, Product> valueOps = productRedisTemplate.opsForValue();
-        return valueOps.multiGet(keyList);   
+        return valueOps.multiGet(keyList);
     }
 
     public Product obtainsSingleProduct(String key) {

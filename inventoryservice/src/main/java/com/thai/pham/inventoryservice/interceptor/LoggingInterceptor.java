@@ -15,7 +15,7 @@ import java.lang.System;
 public class LoggingInterceptor {
     private static final Logger log = LoggerFactory.getLogger(LoggingInterceptor.class);
 
-    @Around("execution(public * com.thai.pham.inventoryservice.service.ProductService.*(..))")
+    @Around("execution(public * com.thai.pham.inventoryservice.service.*Service.*(..))")
     public Object invokeUnderTrace(ProceedingJoinPoint jointPoint) throws Throwable {
         String name = jointPoint.getSignature().getName();
         long start = System.currentTimeMillis();

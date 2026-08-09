@@ -18,7 +18,7 @@ import com.thai.pham.inventoryservice.common.EntityMessage;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product extends BaseEntity{
+public class Product extends BaseEntity {
     @NotBlank(message = EntityMessage.EMPTY_PRODUCT_SKU_MESSAGE)
     @Column(name = "sku", unique = true, nullable = false)
     private String sku;
@@ -32,10 +32,10 @@ public class Product extends BaseEntity{
     private ProductAttributes productAttributes;
 
     @OneToMany(
-        mappedBy = "product", 
-        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, 
-        fetch = FetchType.LAZY,
-        orphanRemoval = true
+            mappedBy = "product",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH},
+            fetch = FetchType.LAZY,
+            orphanRemoval = true
     )
     private List<Inventory> inventory;
 

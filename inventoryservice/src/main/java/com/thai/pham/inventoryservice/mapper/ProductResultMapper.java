@@ -2,18 +2,13 @@ package com.thai.pham.inventoryservice.mapper;
 
 import com.thai.pham.inventoryservice.dto.ProductResult;
 import com.thai.pham.inventoryservice.entity.Product;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProductUpdateDtoMapper {
-    private final ProductAttributeMapper attributeMapper;
+public class ProductResultMapper implements BaseMapper<Product, ProductResult> {
+    private ProductAttributeMapper attributeMapper;
 
-    @Autowired
-    public ProductUpdateDtoMapper(ProductAttributeMapper attributeMapper) {
-        this.attributeMapper = attributeMapper;
-    }
-
+    @Override
     public Product mapEntity(ProductResult productResult) {
         return new Product(
                 productResult.getId(),
@@ -23,6 +18,7 @@ public class ProductUpdateDtoMapper {
         );
     }
 
+    @Override
     public ProductResult mapObject(Product product) {
         return new ProductResult(
                 product.getId(),
