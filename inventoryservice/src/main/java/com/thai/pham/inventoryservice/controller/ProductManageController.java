@@ -2,14 +2,13 @@ package com.thai.pham.inventoryservice.controller;
 
 import com.thai.pham.inventoryservice.dto.*;
 import com.thai.pham.inventoryservice.mapper.PageDtoMapper;
+import com.thai.pham.inventoryservice.service.ProductInventoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.thai.pham.inventoryservice.entity.Product;
 import com.thai.pham.inventoryservice.service.ProductService;
 
 import java.util.UUID;
@@ -18,14 +17,17 @@ import java.util.UUID;
 @RequestMapping("api/v1/products/")
 public class ProductManageController {
     private final ProductService productService;
+    private final ProductInventoryService productInventoryService;
     private final PageDtoMapper mapper;
 
     @Autowired
     public ProductManageController(
             ProductService productService,
+            ProductInventoryService productInventoryService,
             PageDtoMapper mapper
     ) {
         this.productService = productService;
+        this.productInventoryService = productInventoryService;
         this.mapper = mapper;
     }
 
@@ -53,19 +55,10 @@ public class ProductManageController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable("id") UUID productId) {
-        if(productService.deleteProductById(productId)) {
-            return ResponseEntity.notFound().build();
-        }
+        productInventoryService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
     }
 
-//    @PostMapping("/update")
-//    public ResponseEntity<ProductUpdateDto> updateProduct(
-//        @RequestBody ProductUpdateDto productUpdateDto
-//    ) {
-//        ProductUpdateDto updatedData = productService.updateOrInsertProduct(productUpdateDto);
-//        return ResponseEntity.ok(updatedData);
-//    }
 
     @PostMapping
     public ResponseEntity<ProductResult> createProduct(CreateProductRequest createProductRequest) {

@@ -54,7 +54,7 @@ public class InventoryService {
         return pageMapper.mapObject(inventoriesDto);
     }
 
-    @Transactional(readOnly = false)
+    @Transactional()
     public List<InventoryDto> updateInventory(List<InventoryChangeDto> dataChangeList, String requestId) {
         Map<UUID, InventoryChangeDto> changeLookUpMap = dataChangeList.stream().collect(Collectors.toMap(InventoryChangeDto::getItemId, Function.identity()));
         List<UUID> ids = dataChangeList.stream().map(InventoryChangeDto::getItemId).toList();
@@ -103,5 +103,9 @@ public class InventoryService {
 
     private Boolean isValidOnHandQuantity(Inventory inventory, int requiredQuantity) {
         return inventory.getQtyAvailable() >= requiredQuantity && inventory.getQtyOnHand() >= requiredQuantity;
+    }
+
+    public Long findOnHandInventoryOfProduct(UUID productId) {
+        return inventoryRepo.findOnHandInventoryByProduct(productId).orElse(0L);
     }
 }

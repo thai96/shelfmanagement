@@ -1,5 +1,6 @@
 package com.thai.pham.inventoryservice.service;
 
+import com.thai.pham.inventoryservice.common.exception.ProductDeletionConflictException;
 import com.thai.pham.inventoryservice.dto.*;
 import com.thai.pham.inventoryservice.entity.Product;
 import com.thai.pham.inventoryservice.entity.ProductAttributes;
@@ -134,12 +135,8 @@ public class ProductService {
 
     @Transactional()
     public Boolean deleteProductById(UUID productId) {
-        Product product = productRepo.findProductById(productId);
-        if (product == null) {
-            return true;
-        }
         productRepo.deleteById(productId);
-        redisService.deleteProduct(productKeyGenerator.generateSingleProductKey(product));
+        redisService.deleteProduct(productKeyGenerator.generateProductKeyById(productId));
         redisService.removeCachePageWithRegex(productKeyGenerator.getPagePattern(), DataType.LIST);
         return productRepo.existsById(productId);
     }
@@ -148,7 +145,7 @@ public class ProductService {
     public ProductResult updateProduct(UUID productId, UpdateProductRequest request) {
         Product product = productRepo.findProductById(productId);
         String newName = request.getName();
-        if(newName != null && !newName.isEmpty()) {
+        if (newName != null && !newName.isEmpty()) {
             product.setProductName(newName);
         }
         ProductAttributes attributes = product.getProductAttributes();
