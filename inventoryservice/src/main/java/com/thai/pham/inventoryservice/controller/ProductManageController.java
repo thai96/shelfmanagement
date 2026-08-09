@@ -32,7 +32,7 @@ public class ProductManageController {
     }
 
     @GetMapping
-    public ResponseEntity<PageDto<ProductResult>> getProductFromName(@RequestParam(value = "search", required = false, defaultValue = "") String searchTerm, Pageable pageable) {
+    public ResponseEntity<PageDto<ProductResult>> getProductsFromName(@RequestParam(value = "search", required = false, defaultValue = "") String searchTerm, Pageable pageable) {
         Page<ProductResult> products = productService.findAllProductByName(searchTerm, pageable);
         PageDto<ProductResult> productPageDto = mapper.mapObject(products);
         return ResponseEntity.ok(productPageDto);
@@ -45,7 +45,7 @@ public class ProductManageController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductResult> createNewProduct(
+    public ResponseEntity<ProductResult> updateProduct(
             @PathVariable("id") UUID id,
             @RequestBody UpdateProductRequest products
     ) {
