@@ -24,6 +24,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
         return GroupedOpenApi.builder()
                 .group("inventoryservice-public")
                 .pathsToMatch("/**")
+                .addOpenApiCustomizer(errorCodeTableRegister())
                 .build();
     }
 
@@ -87,11 +88,11 @@ public class SwaggerConfig implements WebMvcConfigurer {
     private String generateTableForErrorCode() {
         StringBuilder tableBuilder = new StringBuilder();
         tableBuilder.append("\n\n### Bảng mã lỗi \n");
-        tableBuilder.append("| Code | HttpStatus | Message | ClientAction |");
-        tableBuilder.append("|---|---|---|---|");
+        tableBuilder.append("| Code | HttpStatus | Message | ClientAction |\n");
+        tableBuilder.append("|---|---|---|---|\n");
 
         for (ErrorCode code : ErrorCode.values()) {
-            tableBuilder.append(String.format("| %s | %d - %s | %s | %s |",
+            tableBuilder.append(String.format("| %s | %d - %s | %s | %s |\n",
                     code.getCode(),
                     code.getStatus().value(),
                     code.getStatus().name(),
