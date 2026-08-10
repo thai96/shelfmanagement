@@ -6,6 +6,7 @@ import io.micrometer.tracing.Span;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.dao.PessimisticLockingFailureException;
@@ -26,65 +27,65 @@ import com.thai.pham.inventoryservice.common.response.ErrorResponse;
 
 @RestControllerAdvice(basePackages = "com.thai.pham")
 public class GlobalExceptionHandler {
-   public static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-   private static final String DEFAULT_TRACE_ID = "n/a";
-   private static final String DEFAULT_COUNTER_NAME = "app.errors";
-   private static final String DEFAULT_COUNTER_TAG_PREFIX = "code";
+    public static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final String DEFAULT_TRACE_ID = "n/a";
+    private static final String DEFAULT_COUNTER_NAME = "app.errors";
+    private static final String DEFAULT_COUNTER_TAG_PREFIX = "code";
 
-   private final ErrorResponseBuilder responseBuilder;
-   private final Tracer tracer;
-   private final MeterRegistry meterRegistry;
+    private final ErrorResponseBuilder responseBuilder;
+    private final ObjectProvider<Tracer> tracerProvider;
+    private final MeterRegistry meterRegistry;
 
     @Autowired
-   public GlobalExceptionHandler(
-        ErrorResponseBuilder responseBuilder,
-        Tracer tracer,
-        MeterRegistry meterRegistry
-   ) {
+    public GlobalExceptionHandler(
+            ErrorResponseBuilder responseBuilder,
+            ObjectProvider<Tracer> tracerProvider,
+            MeterRegistry meterRegistry
+    ) {
         this.responseBuilder = responseBuilder;
-        this.tracer = tracer;
+        this.tracerProvider = tracerProvider;
         this.meterRegistry = meterRegistry;
-   }
+    }
 
-   @ExceptionHandler(BaseBusinessException.class)
-   public ResponseEntity<ErrorResponse> handleBusiness(BaseBusinessException ex, HttpServletRequest req) {
+    @ExceptionHandler(BaseBusinessException.class)
+    public ResponseEntity<ErrorResponse> handleBusiness(BaseBusinessException ex, HttpServletRequest req) {
         ErrorCode code = ex.getErrorCode();
         String traceId = currentTraceId();
         log.warn("[{}] bussiness error code={} path={}", traceId, code.getCode(), req.getRequestURI());
         countError(code);
         return ResponseEntity.status(code.getStatus()).body(responseBuilder.build(code, ex, req, traceId));
-   }
+    }
 
-   @ExceptionHandler({OptimisticLockingFailureException.class, PessimisticLockingFailureException.class})
-   public ResponseEntity<ErrorResponse> handleLockConflict(DataAccessException ex, HttpServletRequest req) {
+    @ExceptionHandler({OptimisticLockingFailureException.class, PessimisticLockingFailureException.class})
+    public ResponseEntity<ErrorResponse> handleLockConflict(DataAccessException ex, HttpServletRequest req) {
         ErrorCode code = ErrorCode.CONCURRENT_MODIFICATION;
         String traceId = currentTraceId();
         log.warn("[{}] lock conflict path={}", traceId, req.getRequestURI());
         countError(code);
-        return ResponseEntity.status(code.getStatus()).header("Retry-After","1")
-                    .body(responseBuilder.build(code, ex, req, traceId));
-   }
+        return ResponseEntity.status(code.getStatus()).header("Retry-After", "1")
+                .body(responseBuilder.build(code, ex, req, traceId));
+    }
 
-   @ExceptionHandler(MethodArgumentNotValidException.class)
-   public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
-       ErrorCode code = ErrorCode.INVALID_INPUT;
-       String traceId = currentTraceId();
-       List<ErrorResponse.FieldError> details = ex.getBindingResult().getFieldErrors().stream()
-               .map(f -> new ErrorResponse.FieldError(f.getField(), f.getDefaultMessage())).toList();
-       ErrorResponse base = responseBuilder.build(code, ex, req, traceId);
-       countError(code);
-       ErrorResponse withDetails = ErrorResponse.builder()
-               .errorCode(base.errorCode())
-               .message(base.message())
-               .traceId(base.traceId())
-               .timestamp(Instant.now())
-               .path(base.path())
-               .debugDetail(base.debugDetail())
-               .fieldErrors(details)
-               .debugStackTrace(base.debugStackTrace())
-               .build();
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest req) {
+        ErrorCode code = ErrorCode.INVALID_INPUT;
+        String traceId = currentTraceId();
+        List<ErrorResponse.FieldError> details = ex.getBindingResult().getFieldErrors().stream()
+                .map(f -> new ErrorResponse.FieldError(f.getField(), f.getDefaultMessage())).toList();
+        ErrorResponse base = responseBuilder.build(code, ex, req, traceId);
+        countError(code);
+        ErrorResponse withDetails = ErrorResponse.builder()
+                .errorCode(base.errorCode())
+                .message(base.message())
+                .traceId(base.traceId())
+                .timestamp(Instant.now())
+                .path(base.path())
+                .debugDetail(base.debugDetail())
+                .fieldErrors(details)
+                .debugStackTrace(base.debugStackTrace())
+                .build();
         return ResponseEntity.status(code.getStatus()).body(withDetails);
-   }
+    }
 
     @ExceptionHandler(QueryTimeoutException.class)
     public ResponseEntity<ErrorResponse> handleDbTimeout(QueryTimeoutException ex, HttpServletRequest req) {
@@ -101,19 +102,23 @@ public class GlobalExceptionHandler {
         log.error("[{}] infra error code={} path={}", traceId, code.getCode(), req.getRequestURI(), ex);
         countError(code);
         HttpHeaders headers = new HttpHeaders();
-        if(code == ErrorCode.SERVICE_UNAVAILABLE) {
+        if (code == ErrorCode.SERVICE_UNAVAILABLE) {
             headers.add("Retry-After", "5");
         }
         return ResponseEntity.status(code.getStatus()).headers(headers)
                 .body(responseBuilder.build(code, ex, req, traceId));
     }
 
-   private String currentTraceId() {
+    private String currentTraceId() {
+        Tracer tracer = tracerProvider.getIfAvailable();
+        if (tracer == null) {
+            return DEFAULT_TRACE_ID;
+        }
         Span span = tracer.currentSpan();
         return span != null ? span.context().traceId() : DEFAULT_TRACE_ID;
-   }
+    }
 
-   private void countError(ErrorCode code) {
+    private void countError(ErrorCode code) {
         meterRegistry.counter(DEFAULT_COUNTER_NAME, DEFAULT_COUNTER_TAG_PREFIX, code.getCode()).increment();
-   }
+    }
 }

@@ -3,7 +3,6 @@ package com.thai.pham.inventoryservice.configs;
 import com.thai.pham.inventoryservice.configs.dbconnection.DataSourceSelector;
 import com.thai.pham.inventoryservice.configs.dbconnection.DataSourceType;
 import com.thai.pham.inventoryservice.configs.dbconnection.ReadRoutingDataSource;
-import com.thai.pham.inventoryservice.configs.dbconnection.RoundRobinSelector;
 import com.zaxxer.hikari.HikariDataSource;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import org.slf4j.Logger;

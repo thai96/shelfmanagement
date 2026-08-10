@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <conversionRule conversionWord="maskedMsg"
-        converterClass="com.thai.pham.inventoryservice.common.logging.SensitiveDataMaskingConverter"/>
+        class="com.thai.pham.inventoryservice.common.logging.SensitiveDataMaskingConverter"/>
 
     <springProfile name="debug">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -31,7 +31,7 @@
             </encoder>
         </appender>
 
-        <appender>
+        <appender name="ASYNC_JSON" class="ch.qos.logback.classic.AsyncAppender">
             <appender-ref ref="JSON"/>
             <queueSize>8192</queueSize>
             <discardingThreshold>0</discardingThreshold>
@@ -39,8 +39,8 @@
         </appender>
 
         <logger name="com.thai.pham" level="INFO"/>
-        <logger name="org.springframwork" level="WARN"/>
+        <logger name="org.springframework" level="WARN"/>
         <logger name="org.hibernate" level="WARN"/>
-        <root level="INFO"><appender-ref ref="ASUNC_JSON"/></root>
+        <root level="INFO"><appender-ref ref="ASYNC_JSON"/></root>
     </springProfile>    
 </configuration>

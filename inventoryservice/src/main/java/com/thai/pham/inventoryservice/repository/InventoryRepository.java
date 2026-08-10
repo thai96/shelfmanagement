@@ -13,10 +13,10 @@ import java.util.Collection;
 
 @Repository
 public interface InventoryRepository extends JpaRepository<Inventory, UUID> {
-    public List<Inventory> findInventoryByIdIn(Collection<UUID> ids);
+    List<Inventory> findInventoryByIdIn(Collection<UUID> ids);
 
-    public List<Inventory> findInventoryByIdNotIn(Collection<UUID> ids);
+    List<Inventory> findInventoryByIdNotIn(Collection<UUID> ids);
 
-    @Query("SELECT SUM(i.qty_on_hand) FROM INVENTORY i WHERE i.product_id = :productId")
+    @Query("SELECT SUM(i.qtyOnHand) FROM Inventory i WHERE i.product.id = :productId")
     Optional<Long> findOnHandInventoryByProduct(@Param(("productId")) UUID productId);
 }

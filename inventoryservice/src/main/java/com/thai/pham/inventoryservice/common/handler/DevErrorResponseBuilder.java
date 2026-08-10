@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.thai.pham.inventoryservice.common.response.ErrorCode;
-import com.thai.pham.inventoryservice.common.ErrorResponse;
+import com.thai.pham.inventoryservice.common.response.ErrorResponse;
 
 @Component
 @Profile("debug")
@@ -36,7 +36,7 @@ public class DevErrorResponseBuilder implements ErrorResponseBuilder {
     }
 
     private String rootMessage(Throwable ex) {
-        Thowable root = ex;
+        Throwable root = ex;
         while(root.getCause() != null) {
             root = root.getCause();
         }

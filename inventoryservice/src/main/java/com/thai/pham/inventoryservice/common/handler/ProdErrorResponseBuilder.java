@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import java.time.Instant;
 
 import com.thai.pham.inventoryservice.common.response.ErrorCode;
-import com.thai.pham.inventoryservice.common.ErrorResponse;
+import com.thai.pham.inventoryservice.common.response.ErrorResponse;
 
 @Component
 @Profile("prod")

@@ -2,6 +2,7 @@ package com.thai.pham.inventoryservice.configs;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.media.ArraySchema;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.media.MediaType;
 import io.swagger.v3.oas.models.media.Schema;
@@ -69,7 +70,7 @@ public class SwaggerConfig implements WebMvcConfigurer {
                 .addProperty("traceId", new Schema<String>().type("string"))
                 .addProperty("timestamp", new Schema<String>().type("string").format("date-time"))
                 .addProperty("path", new Schema<String>().type("string"))
-                .addProperty("details", new Schema<>().type("array")
+                .addProperty("details", new ArraySchema().type("array")
                         .items(new Schema<>().type("object")));
 
     }
