@@ -25,9 +25,9 @@
     </changeSet>
 
     <changeSet id="V1_003pg" author="thai.pham" dbms="postgresql">
-        <sqlFile path="db/changelogs/v1.0/postgresql/003_stock_transfer_constraint.sql"/>
+        <sqlFile path="../postgresql/003_stock_transfer_constraint.sql"/>
         <rollback>
-            <sqlFile path="db/changelogs/v1.0/postgresql/003_stock_transfer_drop_constraint.sql"/>
+            <sqlFile path="../postgresql/003_stock_transfer_drop_constraint.sql"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

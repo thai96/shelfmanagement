@@ -30,9 +30,9 @@
         </createTable>
     </changeSet>
     <changeSet id="V1_004pg" author="thai.pham" dbms="postgresql">
-        <sqlFile path="db/changelogs/v1.0/postgresql/004_inventory_constraint.sql"/>
+        <sqlFile path="../postgresql/004_inventory_constraint.sql"/>
         <rollback>
-            <sqlFile path="db/changelogs/v1.0/postgresql/004_inventory_drop_constraint.sql"/>
+            <sqlFile path="../postgresql/004_inventory_drop_constraint.sql"/>
         </rollback>
     </changeSet>
 </databaseChangeLog>

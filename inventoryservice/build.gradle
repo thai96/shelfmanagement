@@ -46,11 +46,3 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
-
-liquibase {
-    activities {
-        main {
-            propertyFile 'src/main/resources/db/liquibase.yml'
-        }
-    }
-}

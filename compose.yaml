@@ -98,7 +98,7 @@ services:
       timeout: 5s
       retries: 5
     volumes:
-      - ./database/:/${POSTGRES_INIT_DIR}/
+      - ./database/init_script/:/${POSTGRES_INIT_DIR}/
   pg-slave-1:
     <<: *pg-slave-config
     ports: ["5433:5432"]
