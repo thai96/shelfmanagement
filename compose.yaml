@@ -124,3 +124,16 @@ services:
     image: redis:8.6.4
     ports:
       - "${SPRING_REDIS_PORT}:${SPRING_REDIS_PORT}"
+
+  liquibase-runner:
+    build: 
+      context: ./
+      dockerfile: ./liquibase-runner/Dockerfile
+    depends_on:
+      pg-master:
+        condition: service_healthy
+    environment:
+      - DB_URL=jdbc:postgresql://pg-master:5432/${POSTGRES_DB}
+      - MIGRA_USER=${POSTGRES_USER}
+      - MIGRA_PASSWORD:${POSTGRES_PASSWORD}
+      - DB_DRIVER=org.postgresql.Driver
