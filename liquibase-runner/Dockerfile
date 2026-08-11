@@ -1,8 +1,8 @@
 FROM liquibase/liquibase:5.0.3
 
 COPY database/changelogs /liquibase/changelog
-COPY COPY liquibase-runner/liquibase.properties /liquibase/liquibase.properties 
+COPY liquibase-runner/liquibase.properties /liquibase/changelog/liquibase.properties
 COPY database/drivers/*.jar /liquibase/lib/ 
+COPY liquibase-runner/entrypoint.sh /entrypoint.sh
 
-ENTRYPOINT ["liquibase"] 
-CMD ["--defaultsFile=/liquibase/liquibase.properties", "update"]
+ENTRYPOINT ["./entrypoint.sh"] 
