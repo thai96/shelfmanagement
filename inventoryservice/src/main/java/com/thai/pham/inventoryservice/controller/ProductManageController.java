@@ -3,6 +3,7 @@ package com.thai.pham.inventoryservice.controller;
 import com.thai.pham.inventoryservice.dto.*;
 import com.thai.pham.inventoryservice.mapper.PageDtoMapper;
 import com.thai.pham.inventoryservice.service.ProductInventoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -61,7 +62,7 @@ public class ProductManageController {
 
 
     @PostMapping
-    public ResponseEntity<ProductResult> createProduct(CreateProductRequest createProductRequest) {
+    public ResponseEntity<ProductResult> createProduct(@Valid @RequestBody CreateProductRequest createProductRequest) {
         ResourceCreatedResult<ProductResult> createdResult = productService.createProducts(createProductRequest);
         return ResponseEntity.created(createdResult.getResourceUri()).body(createdResult.getResponseBodyContent());
     }
