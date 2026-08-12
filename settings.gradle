@@ -1,3 +1,4 @@
 rootProject.name = 'shelfmanagement'
 
 include 'inventoryservice'
+include 'ledgerservice'

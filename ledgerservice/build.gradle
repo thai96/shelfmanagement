@@ -1,0 +1,50 @@
+plugins {
+	id 'java'
+//	id 'war'
+	id 'org.springframework.boot' version '4.0.6'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.thai.pham'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = 21
+	targetCompatibility = 21
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5"
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+//	implementation('org.springframework.boot:spring-boot-starter-test')
+	implementation('org.springframework.boot:spring-boot-starter-validation')
+	implementation('org.springframework.boot:spring-boot-starter-actuator')
+	implementation('org.springframework.boot:spring-boot-starter-aspectj')
+//	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat-runtime'
+	implementation 'io.github.resilience4j:resilience4j-circuitbreaker'
+	implementation 'io.github.resilience4j:resilience4j-spring-boot3'
+	implementation 'io.micrometer:micrometer-tracing-bridge-otel'
+	implementation 'net.logstash.logback:logstash-logback-encoder'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	testRuntimeOnly 'com.h2database:h2'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
