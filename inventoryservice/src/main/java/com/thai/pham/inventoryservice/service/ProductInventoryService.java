@@ -21,7 +21,7 @@ public class ProductInventoryService {
 
     @Transactional
     public void deleteProduct(UUID productId) {
-        if (inventoryService.findOnHandInventoryOfProduct(productId) <= 0) {
+        if (inventoryService.findOnHandInventoryOfProduct(productId) > 0) {
             throw new ProductDeletionConflictException();
         }
         productService.deleteProductById(productId);
