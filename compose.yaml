@@ -30,18 +30,8 @@ x-pg-slave-config: &pg-slave-config
     retries: 5
     start_period: 30s
 
-services:
-  inventoryservice:
-    container_name: inventoryservice
-    build:
-      context: ./
-      dockerfile: ./inventoryservice/Dockerfile
-    image: thaipham/inventoryservice
-    ports:
-      - "${INVENTORY_MACHINE_PORT}:${INVENTORY_SERVER_PORT}"
-    # networks:
-    #   - app-net
-    environment:
+x-spring-service-config: &spring-service-config
+  environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
       DB_NAME: ${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
@@ -53,11 +43,11 @@ services:
       REDIS_HOST: redis
       INVENTORY_SERVER_PORT: ${INVENTORY_SERVER_PORT}
       INVENTORY_DOC_PATH: ${INVENTORY_DOC_PATH}
-    depends_on:
-      pg-master:
-        condition: service_healthy
-      pg-slave-1:
-        condition: service_healthy
+  depends_on:
+    pg-master:
+      condition: service_healthy
+    pg-slave-1:
+      condition: service_healthy
 #      pg-slave-2:
 #        condition: service_healthy
 #      pg-slave-3:
@@ -66,14 +56,45 @@ services:
 #        condition: service_healthy
 #      pg-slave-5:
 #        condition: service_healthy
-    restart: unless-stopped
+  restart: unless-stopped
+  logging:
+    driver: "json-file"  
+
+services:
+  inventoryservice:
+    <<: *spring-service-config
+    container_name: inventoryservice
+    build:
+      context: ./
+      dockerfile: ./inventoryservice/Dockerfile
+    image: thaipham/inventoryservice
+    ports:
+      - "${INVENTORY_MACHINE_PORT}:${INVENTORY_SERVER_PORT}"
+    # networks:
+    #   - app-net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${INVENTORY_SERVER_PORT}/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
-    logging:
-      driver: "json-file"
+
+
+  ledgerservice:
+    <<: *spring-service-config
+    container_name: ledgerservice
+    build:
+      context: ./
+      dockerfile: ./ledgerservice/Dockerfile
+    image: thaipham/ledgerservice
+    ports:
+      - "${LEDGER_MACHINE_PORT}:${LEDGER_SERVER_PORT}"
+    # networks:
+    #   - app-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${LEDGER_SERVER_PORT}/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   pg-master:
     image: bitnami/postgresql:latest
