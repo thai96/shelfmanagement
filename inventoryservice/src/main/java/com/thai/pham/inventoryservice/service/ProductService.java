@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class ProductService {
     private final ProductInventoryDetailMapper productInventoryDetailMapper;
-    private final ProductUpdateDtoMapper productUpdateDtoMapper;
     private final ProductRepository productRepo;
     private final RedisService redisService;
     private final ProductKeyGenerator productKeyGenerator;
@@ -49,7 +48,6 @@ public class ProductService {
     public ProductService(
             ProductRepository productRepo,
             ProductInventoryDetailMapper productInventoryDetailMapper,
-            ProductUpdateDtoMapper productUpdateDtoMapper,
             RedisService redisService,
             ProductKeyGenerator productKeyGenerator,
             ProductAttributeMapper attributeMapper,
@@ -57,7 +55,6 @@ public class ProductService {
     ) {
         this.productRepo = productRepo;
         this.productInventoryDetailMapper = productInventoryDetailMapper;
-        this.productUpdateDtoMapper = productUpdateDtoMapper;
         this.redisService = redisService;
         this.productKeyGenerator = productKeyGenerator;
         this.attributeMapper = attributeMapper;
