@@ -1,4 +1,4 @@
-package com.thai.pham.ledgerservice.common.entity;
+package com.thai.pham.ledgerservice.common.data.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

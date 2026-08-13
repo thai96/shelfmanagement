@@ -1,17 +1,21 @@
-package com.thai.pham.ledgerservice.common.entity;
+package com.thai.pham.ledgerservice.common.data.entity;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum UpdateReason {
     SALE("SALE"),
     INBOUND("INBOUND"),
     TRANSFER("TRANSFER"),
     LOST("LOST");
 
+    @Getter
     private final String reasonStringValue;
 
     public UpdateReason(String reasonStringValue) {
