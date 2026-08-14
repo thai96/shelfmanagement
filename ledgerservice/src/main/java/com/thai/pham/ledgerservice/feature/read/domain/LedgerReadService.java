@@ -11,11 +11,11 @@ import com.thai.pham.ledgerservice.common.data.repositories;
 @Service
 @Transactional(readOnly = true)
 public class LedgerReadService {
-    private final LedgerRepository ledgerRepository;
+    private final LedgerReadRepository ledgerRepository;
     private final LedgerPageResultMapper pageResultMapper;
 
     @Autowired
-    public LedgerReadService(LedgerRepository ledgerRepository, LedgerPageResultMapper pageResultMapper) {
+    public LedgerReadService(LedgerReadRepository ledgerRepository, LedgerPageResultMapper pageResultMapper) {
         this.ledgerRepository = ledgerRepository;
         this.pageResultMapper = pageResultMapper;
     }
