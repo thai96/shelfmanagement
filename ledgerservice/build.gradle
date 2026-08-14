@@ -37,6 +37,8 @@ dependencies {
 	implementation 'io.github.resilience4j:resilience4j-spring-boot3'
 	implementation 'io.micrometer:micrometer-tracing-bridge-otel'
 	implementation 'net.logstash.logback:logstash-logback-encoder'
+	implementation 'org.mapstruct:mapstruct:1.6.3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
