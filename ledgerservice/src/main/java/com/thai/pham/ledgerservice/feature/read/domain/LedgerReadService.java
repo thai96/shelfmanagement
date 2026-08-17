@@ -40,7 +40,7 @@ public class LedgerReadService {
         return pageResultMapper.toResult(queryResult);
     }
 
-    public List<LedgerPageResult> findLedgerByRefId(String refId) {
+    public List<ReaderItemResult> findLedgerByRefId(String refId) {
         List<Ledger> ledgers = ledgerRepository.findByRefId(refId).orElse(Collections::emptyList);
         return ledgerResultMapper.toResultList(ledgers);
     }
