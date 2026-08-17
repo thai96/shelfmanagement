@@ -3,6 +3,8 @@ package com.thai.pham.ledgerservice.feature.read.data.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import java.util.List;
+
 import com.thai.pham.ledgerservice.common.data.entity.Ledger;
 
 @Mapper(componentModel = "spring")
@@ -15,4 +17,6 @@ public class LedgerResultMapper {
     @Mapping(source = "refId", target = "refId")
     @Mapping(source = "createdAt", target = "createdAt")
     ReaderItemResult toResult(Ledger ledger);
+
+    List<ReaderItemResult> toResultList(List<Ledger> ledger);
 }
