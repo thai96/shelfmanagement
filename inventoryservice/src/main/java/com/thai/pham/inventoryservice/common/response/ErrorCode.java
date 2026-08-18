@@ -20,7 +20,8 @@ public enum ErrorCode {
     DATABASE_TIMEOUT("SYS-502", HttpStatus.GATEWAY_TIMEOUT, "Truy vấn dữ liệu quá thời gian cho phép", "Retry sau, Liên hệ support với id nếu cần"),
     INTERNAL_ERROR("SYS-503", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi hệ thống", "Liên hệ support với id nếu cần"),
 
-    PRODUCTION_DELETE_CONFLICT("PRO-001", HttpStatus.CONFLICT, "Product In Use", "Cannot delete product with active inventory");
+    PRODUCTION_DELETE_CONFLICT("PRO-001", HttpStatus.CONFLICT, "Product In Use", "Cannot delete product with active inventory"),
+    LOCATION_DELETE_CONFLICT("LOC-001", HttpStatus.CONFLICT, "Location In Use", "Cannot delete location with active inventory");
 
     private final String code;
     private final HttpStatus status;

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.ColumnDefault;
 import jakarta.validation.constraints.NotBlank;
 
@@ -19,6 +20,7 @@ import com.thai.pham.inventoryservice.common.EntityMessage;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class Location extends BaseEntity {
     @NotBlank(message = EntityMessage.EMPTY_LOCATION_NAME_MESSAGE)
     @Column(name = "name", nullable = false)
