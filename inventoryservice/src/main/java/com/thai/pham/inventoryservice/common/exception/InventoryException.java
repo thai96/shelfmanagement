@@ -18,4 +18,8 @@ public class InventoryException extends BaseBusinessException {
     public static InventoryException negativeStockRejected() {
         return new InventoryException(ErrorCode.NEGATIVE_STOCK_REJECTED);
     }
+
+    public static InventoryException skuNotFound() {
+        return new InventoryException(ErrorCode.SKU_NOT_FOUND);
+    }
 }

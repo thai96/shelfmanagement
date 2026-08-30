@@ -21,7 +21,10 @@ public enum ErrorCode {
     INTERNAL_ERROR("SYS-503", HttpStatus.INTERNAL_SERVER_ERROR, "Lỗi hệ thống", "Liên hệ support với id nếu cần"),
 
     PRODUCTION_DELETE_CONFLICT("PRO-001", HttpStatus.CONFLICT, "Product In Use", "Cannot delete product with active inventory"),
-    LOCATION_DELETE_CONFLICT("LOC-001", HttpStatus.CONFLICT, "Location In Use", "Cannot delete location with active inventory");
+    LOCATION_DELETE_CONFLICT("LOC-001", HttpStatus.CONFLICT, "Location In Use", "Cannot delete location with active inventory"),
+    SKU_NOT_FOUND("INV-004", HttpStatus.NOT_FOUND, "Not Found", "SKU TSHIRT-BLK-XL not found at provided location"),
+    INSUFFICIENT_STOCK("INV-005", HttpStatus.CONFLICT, "Insufficient Stock", "Product's available stock is not sufficient!");
+
 
     private final String code;
     private final HttpStatus status;
