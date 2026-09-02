@@ -35,4 +35,9 @@ public interface InventoryRepository extends JpaRepository<Inventory, UUID>, Jpa
     @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "-2")})
     @Query("SELECT i FROM Inventory i JOIN FETCH i.product p WHERE i.location.id = :location_id AND p.sku = :sku AND i.qtyOnHand >= :reduce_qty AND i.qtyAvailable >= :reduce_qty ORDER BY p.sku ASC")
     Optional<Inventory> findInventoryByLocationAndSku(@Param("location_id") UUID locationId, @Param("sku") String sku, @Param("reduce_qty") Integer reduceQty);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value = "-2")})
+    @Query("SELECT i FROM Inventory i JOIN FETCH i.product p WHERE i.location.id = :location_id AND p.sku = :sku AND i.qtyAvailable >= :reserve_qty")
+    Optional<Inventory> findInventoryForReserve(@Param("location_id") UUID locationId, @Param("sku") String sku, @Param("reserve_qty") Integer reserveQty);
 }

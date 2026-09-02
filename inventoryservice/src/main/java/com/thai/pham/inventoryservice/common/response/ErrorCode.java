@@ -23,7 +23,8 @@ public enum ErrorCode {
     PRODUCTION_DELETE_CONFLICT("PRO-001", HttpStatus.CONFLICT, "Product In Use", "Cannot delete product with active inventory"),
     LOCATION_DELETE_CONFLICT("LOC-001", HttpStatus.CONFLICT, "Location In Use", "Cannot delete location with active inventory"),
     SKU_NOT_FOUND("INV-004", HttpStatus.NOT_FOUND, "Not Found", "SKU TSHIRT-BLK-XL not found at provided location"),
-    INSUFFICIENT_STOCK("INV-005", HttpStatus.CONFLICT, "Insufficient Stock", "Product's available stock is not sufficient!");
+    INSUFFICIENT_STOCK("INV-005", HttpStatus.CONFLICT, "Insufficient Stock", "Product's available stock is not sufficient!"),
+    DUPLICATED_REF("REV-001", HttpStatus.CONFLICT, "Duplicate Request", "Order ref already has an active reservation");
 
 
     private final String code;
