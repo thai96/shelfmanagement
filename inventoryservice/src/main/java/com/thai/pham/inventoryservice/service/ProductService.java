@@ -165,4 +165,9 @@ public class ProductService {
                 .buildAndExpand(createdProductItem.getId()).toUri();
         return new ResourceCreatedResult<>(resourceUri, productResultMapper.mapObject(createdProductItem));
     }
+
+    public Boolean checkProductExisted(List<UUID> productList) {
+        List<UUID> distinctList = productList.stream().distinct().toList();
+        return productRepo.checkProductsExisted((long) distinctList.size(), distinctList);
+    }
 }

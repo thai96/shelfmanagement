@@ -24,8 +24,9 @@ public enum ErrorCode {
     LOCATION_DELETE_CONFLICT("LOC-001", HttpStatus.CONFLICT, "Location In Use", "Cannot delete location with active inventory"),
     SKU_NOT_FOUND("INV-004", HttpStatus.NOT_FOUND, "Not Found", "SKU TSHIRT-BLK-XL not found at provided location"),
     INSUFFICIENT_STOCK("INV-005", HttpStatus.CONFLICT, "Insufficient Stock", "Product's available stock is not sufficient!"),
-    DUPLICATED_REF("REV-001", HttpStatus.CONFLICT, "Duplicate Request", "Order ref already has an active reservation");
-
+    DUPLICATED_REF("REV-001", HttpStatus.CONFLICT, "Duplicate Request", "Order ref already has an active reservation"),
+    INVALID_TRANSFER_LOCATION("TRS-001", HttpStatus.BAD_REQUEST, "Invalid Request", "Source and destination locations must be different"),
+    INVALID_TRANSFER_PRODUCT("TRS-002", HttpStatus.BAD_REQUEST, "Invalid Request", "Invalid Product");
 
     private final String code;
     private final HttpStatus status;

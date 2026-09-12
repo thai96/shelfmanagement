@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.UUID;
 
 import com.thai.pham.inventoryservice.common.EntityMessage;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "STOCK_TRANSFER")
@@ -17,6 +18,7 @@ import com.thai.pham.inventoryservice.common.EntityMessage;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@SuperBuilder
 public class StockTransfer extends BaseEntity {
     @NotNull(message = EntityMessage.NULL_TRANSFER_STATUS_MESSAGE)
     @Column(name = "attributes", nullable = false)

@@ -1,19 +1,23 @@
 package com.thai.pham.inventoryservice.controller;
 
+import com.thai.pham.inventoryservice.dto.*;
+import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.UUID;
 
 import com.thai.pham.inventoryservice.service.StockTransferService;
-import com.thai.pham.inventoryservice.dto.StockTransferDto;
-import com.thai.pham.inventoryservice.dto.PageDto;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @RestController
-@RequestMapping("api/v1/transfer/")
+@RequestMapping("api/v1/stock-transfers/")
 class StockTransferController {
     private final StockTransferService transferService;
 
@@ -23,23 +27,23 @@ class StockTransferController {
     }
 
 
-    @GetMapping("/all")
-    public ResponseEntity<PageDto<StockTransferDto>> getAllTransferStock(Pageable pageInfo) {
-        return new ResponseEntity<>(transferService.getTransferStockPage(pageInfo), HttpStatus.OK);
+    @PostMapping
+    public ResponseEntity<TransferActionResponse> createTransferRequest(@RequestBody @Valid CreateTransferRequest request) {
+        TransferActionResponse createdResource = transferService.createTransfer(request);
+        URI createdResourceURI = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(createdResource.id())
+                .toUri();
+        return ResponseEntity.created(createdResourceURI).body(createdResource);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StockTransferDto> getTransferInformation(@PathVariable UUID id) {
-        return new ResponseEntity<>(transferService.findTransferById(id), HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<PageDto<TransferActionResponse>> listTransfer(@ModelAttribute @ParameterObject ListTransferRecordRequest request, @PageableDefault(page = 0, size = 20) Pageable pageable) {
+        return ResponseEntity.ok(transferService.listTransfer(request, pageable));
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<StockTransferDto> updateTransfer(@RequestBody StockTransferDto newInfomation) {
-        return new ResponseEntity<>(transferService.updateTransferInformation(newInfomation), HttpStatus.OK);
+    @GetMapping("/{transfer-id}")
+    public ResponseEntity<TransferActionResponse> transferDetail(@PathVariable("transfer-id") UUID transferId) {
+        return ResponseEntity.ok(transferService.getTransferDetail(transferId));
     }
 
-    @PutMapping("/new")
-    public ResponseEntity<StockTransferDto> addTransfer(@RequestBody StockTransferDto insertInformation) {
-        return new ResponseEntity<>(transferService.addTransfer(insertInformation), HttpStatus.OK);
-    }
 }
