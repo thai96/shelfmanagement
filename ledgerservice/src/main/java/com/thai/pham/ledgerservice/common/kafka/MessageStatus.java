@@ -1,4 +1,4 @@
-package com.thai.pham.ledgerservice.feature.write.kafka;
+package com.thai.pham.ledgerservice.common.kafka;
 
 public enum MessageStatus {
     RECEIVED,
