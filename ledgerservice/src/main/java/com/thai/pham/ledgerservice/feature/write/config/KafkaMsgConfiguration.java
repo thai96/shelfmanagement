@@ -12,20 +12,20 @@ import org.springframework.util.backoff.ExponentialBackOff;
 @Configuration
 public class KafkaMsgConfiguration {
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, MessageEnvelop>
+    public ConcurrentKafkaListenerContainerFactory<?, MessageEnvelop<?>>
     orderKafkaListenerContainerFactory(
-            ConsumerFactory<String, MessageEnvelop> consumerFactory,
+            ConsumerFactory<?, MessageEnvelop<?>> consumerFactory,
             CommonErrorHandler kafkaErrorHandler,
-            @Value("${app.message.concurrent}")Integer concurrentConsumer
+            @Value("${app.message.concurrent}")Integer concurrentConsumer,
+            MessageActionInvoker messageActionInvoker
     ) {
-
         var factory =
-                new ConcurrentKafkaListenerContainerFactory<String, MessageEnvelop>();
+                new ConcurrentKafkaListenerContainerFactory<?, MessageEnvelop<?>>();
 
         factory.setConsumerFactory(consumerFactory);
         factory.setConcurrency(concurrentConsumer);
         factory.setCommonErrorHandler(kafkaErrorHandler);
-
+        factory.setRecordInterceptor(messageActionInvoker);
         return factory;
     }
 

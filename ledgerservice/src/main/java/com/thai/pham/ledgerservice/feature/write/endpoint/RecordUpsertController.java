@@ -24,9 +24,4 @@ public class RecordUpsertController {
         msgProcessingService.processMessage(request);
         recordAppendService.appendLedgerRecord(request.getPayload());
     }
-
-    private boolean isSkippableStatus(MessageStatus status) {
-        return status != null && (status == MessageStatus.COMPLETED ||
-            status == MessageStatus.QUARANTINED);
-    }
 }
